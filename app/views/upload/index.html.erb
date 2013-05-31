@@ -1,0 +1,255 @@
+
+
+<link rel="stylesheet" type="text/css" href="stylesheets/uploadify.css">
+<link rel="stylesheet" type="text/css" href="stylesheets/upload.css">
+<script type="text/javascript" src="javascripts/upload/jquery.uploadify.js"></script>
+<script type="text/javascript" src="javascripts/upload/upload.js"></script>
+
+<% file_extension=$allow_video_extensions.split(";").join("，") %>
+<% upload_extension= $allow_video_extensions.split(";").map! { |i| "*."+i }.join(";") %>
+<script type="text/javascript">
+    var auth_token = '<%=session[:authenticity_token] %>'
+    $(function () {
+        var upload_path = '<%= $default_upload_file_path%>'
+        $.bindHover()
+        $("#upload_main").tabs()
+
+        $("#add_files").uploadify({
+            'swf':'uploadify.swf',
+            'uploader':"upload",
+            'buttonText':'+',
+            'auto':false,
+            'removeCompleted':false,
+            'width':25,
+            'height':25,
+            'queueID':'upload_queue_list',
+            'formData':{'authenticity_token':auth_token},
+            'multi':true,
+            'truncateLength':0,
+            'buttonClass':'ui-state-default ui-corner-all need-hover',
+            'fileTypeExts':'<%= upload_extension%>',
+            'fileTypeDesc':'支持视频格式：',
+            'fileSizeLimit ':'<%= $max_file_size%>',
+            'itemTemplate':'<tr id="${fileID}" class="uploadify-queue-item">\
+                <td class="item-index"><input type="checkbox" class="checkbox-item-hook" value="${fileID}"/><span class="index-hook"></span></td>\
+                <td class="status">准备</td>\
+                <td class="filename"><input value="${fileName}" disabled/></td>\
+                <td class="data-size">${fileSize}</td> \
+                <td class="speed"></td>\
+                <td class="progress"><span class="percentage"></span><div class="uploadify-progress-bar"><!--Progress Bar--></div></td>\
+                <td class="path"></td>\
+                </tr>',
+            'onSelect':function (file) {
+                $("#" + file.id).find(".path").html($("<input/>").attr('disabled', true).val(upload_path))
+            },
+            'onDialogClose':function (queueData) {
+                $.updateIndexNum($("#" + this.settings.queueID), "item-index")
+                $.bindCheckboxAll($("#" + this.settings.queueID).parent())
+                if (queueData.queueLength != 0) {
+                    $("#upload_main").tabs("disable")
+                    var files = {}
+                    for (var d in queueData.files) {
+                        files[d] = queueData.files[d].name
+                        $("#" + d).find('.status').html('检查')
+                    }
+
+                    $.post('upload/check', {data:files, authenticity_token:auth_token}, function (result) {
+                        console.log(result)
+                        if (!result['error']) {
+                            var succ_files = $.extend(true, {}, files)
+                            if (!result['flag']) {
+                                for (var d in result['data']) {
+                                    $("#" + d).remove()
+                                    delete succ_files[d]
+                                    delete queueData.files[d]
+                                    queueData.queueLength -= 1
+                                    alert(result['data'][d]['msg'])
+                                }
+                            }
+                            for (var d in succ_files)
+                                $("#" + d).find('.status').html('准备')
+                        }
+
+                        if (queueData.queueLength == 0) {
+                            $("#upload_main").tabs("enable")
+                        }
+                    }, 'json')
+
+                }
+
+            },
+            'onUploadStart':function (file) {
+                $("#" + file.id).find('.status').html("上传")
+            },
+            'onUploadSuccess':function (file, data, response) {
+                console.log(data)
+                var result = JSON.parse(data)
+                if (result['flag'] == true) {
+                    $("#" + file.id).find('.status').html("完成");
+                    $("#" + file.id).find('.uploadify-progress-bar').remove();
+                    $("#" + file.id).fadeOut(500, function () {
+                        $(this).remove();
+                    });
+                    $.updateDoneList($("#upload_done .file-list"), $("#upload_done_list"),auth_token)
+                    $.updateIndexNum($("#" + this.settings.queueID), "item-index")
+                    $.bindCheckboxAll($("#" + this.settings.queueID))
+                } else {
+                    $("#" + file.id).find('.status').css('color', 'red').html("出错");
+                }
+                this.queueData.queueLength -= 1
+                delete this.queueData.files[file.id]
+            },
+            'onQueueComplete':function () {
+                $("#upload_main").tabs("enable")
+            },
+            'onFallback':function () {
+                alert("您未安装FLASH控件，无法上传文件！请安装FLASH控件后再试。");
+            }
+        })
+
+        $("#upload_start").click(function () {
+            var fList = []
+            $("#upload_queue_list input[type='checkbox']:checked").each(function () {
+                fList.push($(this).val())
+            })
+            if (fList.length != 0) {
+                $('#add_files').uploadify('upload', fList)
+            }
+            $("#upload_queue .file-list .select-all-hook").attr('checked', false)
+        })
+
+        $("#upload_cancel").click(function () {
+            var totalItems = $("#upload_queue_list input[type='checkbox']").length
+
+            var fList = []
+            $("#upload_queue_list input[type='checkbox']:checked").each(function () {
+                fList.push($(this).val())
+            })
+            if (fList.length != 0) {
+                $('#add_files').uploadify('cancel', fList)
+            }
+            if (fList.length == totalItems)
+                $("#upload_main").tabs("enable")
+            $("#upload_queue .file-list .select-all-hook").attr('checked', false)
+        })
+
+        $("#delete_done_files").click(function () {
+            var fList = []
+            $("#upload_done_list input[type='checkbox']:checked").each(function () {
+                fList.push($(this).val())
+            })
+            $.deleteFiles(fList, auth_token)
+            $("#upload_done .file-list .select-all-hook").attr('checked', false)
+        })
+
+        $("#refresh_done_files").click(function () {
+            $.updateDoneList($("#upload_done .file-list"), $("#upload_done_list"), auth_token)
+        })
+
+        $.bindCheckboxAll($("#upload_done .file-list"))
+        $.updateDoneList($("#upload_done .file-list"), $("#upload_done_list"), auth_token)
+
+        $("#video_info").dialog({
+            autoOpen:false,
+            bgiframe:true,
+            modal:true,
+            width:800,
+            position:{my:'center', at:'top', of:window}
+        })
+    })
+
+
+</script>
+
+<div id="upload_main">
+  <div id="date"></div>
+  <ul>
+    <li>
+      <a href="#upload_queue">上传中</a>
+    </li>
+    <li>
+      <a href="#upload_done">已上传</a>
+    </li>
+  </ul>
+
+  <div id="upload_done">
+    <div class="oper-options">
+      <table>
+        <tr>
+          <td>删除</td>
+          <td>刷新</td>
+        </tr>
+        <tr>
+          <td>
+            <a id="delete_done_files" class="ui-state-default ui-corner-all need-hover" title="删除"><span class="ui-icon ui-icon-trash"></span></a>
+          </td>
+          <td>
+            <a id="refresh_done_files" class="ui-state-default ui-corner-all need-hover" title="刷新"><span class="ui-icon ui-icon-refresh"></span></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <table class="file-list">
+        <thead>
+        <tr>
+          <td class="clearfix-all"><input type="checkbox" class="select-all-hook"/><span>全部</span></td>
+          <td class="filename">视频名称</td>
+          <td class="info">视频信息 (格式 | 分辨率 | 片长 | 大小)</td>
+          <td class="time">上传时间</td>
+          <td class="others">其它</td>
+        </tr>
+        </thead>
+        <tbody id="upload_done_list"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div id="upload_queue">
+    <form>
+      <div class="oper-options">
+        <table>
+          <tr>
+            <td>添加</td>
+            <td>开始</td>
+            <td>暂停</td>
+            <td>删除</td>
+          </tr>
+          <tr>
+            <td>
+              <input id="add_files" class="ui-state-default ui-corner-all need-hover" name="add_files" type="file" multiple="true"/>
+            </td>
+            <td>
+              <a id="upload_start" class="ui-state-default ui-corner-all need-hover" title="开始"><span class="ui-icon ui-icon-play"></span></a>
+            </td>
+            <td>
+              <a href="javascript:$('#file_upload').uploadify('upload','*')" class="ui-state-default ui-corner-all need-hover" title="暂停"><span class="ui-icon ui-icon-pause"></span></a>
+            </td>
+            <td>
+              <a id="upload_cancel" class="ui-state-default ui-corner-all need-hover" title="删除"><span class="ui-icon ui-icon-trash"></span></a>
+            </td>
+          </tr>
+        </table>
+        <span class="notice">提示：允许的上传格式包括 <%= file_extension %>。文件大小限制在<%= $max_file_size %>以内</span>
+      </div>
+
+      <div>
+        <table class="file-list">
+          <thead>
+          <tr>
+            <td class="clearfix-all"><input type="checkbox" class="select-all-hook"/><span>全部</span></td>
+            <td class="status">状态</td>
+            <td class="filename">视频名称</td>
+            <td class="data-size">文件大小</td>
+            <td class="speed">上传速度 [剩余时间]</td>
+            <td class="progress">上传进度</td>
+            <td class="path">上传路径</td>
+          </tr>
+          </thead>
+          <tbody id="upload_queue_list"></tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+</div>

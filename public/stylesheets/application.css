@@ -1,0 +1,236 @@
+@charset "utf-8";
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ */
+
+/* CSS Document */
+/* reset */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+    content: none;
+}
+
+a {
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    color: #252525;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #ec5d1e;
+    -moz-transition: all .3s ease;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+}
+
+ins {
+    background-color: #ff9;
+    color: #000;
+    text-decoration: none;
+}
+
+mark {
+    background-color: #ff9;
+    color: #000;
+    font-style: italic;
+    font-weight: 700;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom: 1px dotted;
+    cursor: help;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+input, select {
+    vertical-align: middle;
+}
+
+:focus {
+    outline: 0;
+}
+
+::selection {
+    background: #f07746;
+    color: #fff;
+}
+
+::-moz-selection {
+    background: #f07746;
+    color: #fff;
+}
+
+[exhide="true"] {
+    display: none;
+}
+
+/*public */
+#content, #page_head {
+    width: 960px;
+    margin: 0 auto;
+    position: relative;
+    background: white;
+    margin-top: 5px;
+}
+
+#page_head {
+    border: 1px solid #AAA;
+}
+
+.clear {
+    clear: both;
+}
+
+.need-hover {
+    margin: 2px;
+    position: relative;
+    padding: 2px;
+    float: left;
+    cursor: pointer;
+}
+
+/**
+ * for transcoding and upload common
+ */
+
+.oper-options td {
+    width: 60px;
+}
+
+.file-list {
+    width: 900px;
+}
+
+.oper-options {
+    margin-bottom: 10px;
+}
+
+.file-list td {
+    border: 1px solid #999;
+    padding: 2px;
+}
+
+/* jquery-ui's tabs patch*/
+
+.ui-tabs {
+    border: 0px none #fff;
+    background: none;
+}
+
+.ui-tabs-nav {
+    border: 0px none #fff;
+    background: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+    background-color: #fff;
+    border: 1px solid #AAA;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    margin-left: 5px;
+}
+
+input:disabled {
+    padding-right: 2px;
+    background-color: #ffffff;
+    width: 95%;
+    border: none;
+    border-bottom: 1px dashed #AAA;
+}
+
+/* head */
+#page_head img {
+    float: left;
+}
+
+#page_head .opt-tabs {
+    position: relative;
+    top: 60px;
+    margin-right: 100px;
+}
+
+#page_head .opt-tabs {
+    line-height: 38px;
+    display: block;
+}
+
+#page_head .opt-tabs li {
+    display: inline;
+    font-size: 24px;
+    margin-right: 20px;
+    float: right;
+    cursor: pointer;
+}
+
+#page_head .opt-tabs li a:hover {
+    text-decoration: none;
+    color: #F63;
+    -moz-transition: all .3s ease;
+    -webkit-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+}
+
+#curbar {
+    margin-top: 5px;
+    height: 3px;
+    background: #F63;
+    position: absolute;
+    bottom: 7px;
+    z-index: 4;
+}

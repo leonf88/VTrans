@@ -1,0 +1,42 @@
+#trans_queue .filename input {
+    width: 80%;
+    padding: 0px 5px;
+}
+
+#trans_queue .clearfix-all, #trans_queue .item-index{ width: 7%;}
+#trans_queue .status{ width: 5%;}
+#trans_queue .filename{ width: 25%;}
+#trans_queue .data-size{ width: 7%;}
+#trans_queue .video-format{ width: 7%;}
+#trans_queue .path{ width: 20%;}
+#trans_queue .others{ width: 6%; margin: auto;}
+
+#trans_done .clearfix-all, #trans_done .item-index{ width: 7%;}
+#trans_done .filename{ width: 20%;}
+#trans_done .video-format{ width: 8%;}
+#trans_done .frame-size{ width: 8%;}
+#trans_done .data-size{ width: 8%;}
+#trans_done .done-time{ width: 10%;}
+#trans_done .path{ width: 15%;}
+#trans_done .others{width: 6%; margin: auto;}
+
+
+#params_setting .tt {
+    margin-left: 5px;
+    padding-left: 5px;
+    width: 100px;
+}
+#params_setting .output-path input{
+    width: 200px;
+    float: left;
+    padding: 0 5px;
+}
+#params_setting .output-path a{
+    float: left;
+    margin-left: 10px;
+}
+#params_setting select {
+    margin-left: 5px;
+    padding-left: 5px;
+    width: 230px;
+}
