@@ -1,0 +1,14 @@
+pbs_job_queue: "long"
+server_path: '/valder/home/data/vtrans/upload'
+upload_path: '/valder/home/data/vtrans/upload'
+trans_path: '/valder/home/data/vtrans/transcode'
+allow_extension: "mp4;3gp;flv;mpg"
+fileDesc: "File(*.mp4;*.3pg;*.mpg*;*.flv)"
+max_file_size: 512MB
+trans_cmd: "/usr/local/bin/ffmpeg"
+
+#$download_video_info_path=File.join(Rails.root, "log", "download")
+#$transcode_video_info_path=File.join(Rails.root, "log", "transcode")
+#$default_pbs_path=File.join(Rails.root, "log", "torque")
+
+

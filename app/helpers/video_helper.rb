@@ -117,30 +117,67 @@ echo ${jobId}\";${qstat}\"
   # use ffmpeg or other video software to get the video basic information
   # create the basic video information
   def self.get_video_info_by_path(file_path)
-    video_extension=File.extname(file_path).downcase
-    video_format=video_extension[1..-1]
-    filename=File.basename(file_path, video_extension)
-    VideoHelper.check_extension(video_extension)
-    gsv_number= Digest::MD5.hexdigest(filename)
+    begin
+      video_extension=File.extname(file_path).downcase
+      video_format=video_extension[1..-1]
+      filename=File.basename(file_path, video_extension)
+      VideoHelper.check_extension(video_extension)
+      gsv_number= Digest::MD5.hexdigest(filename)
 
-    v_info=VideoHelper.record_video_info(file_path)
+      v_info=VideoHelper.record_video_info(file_path)
 
-    v_info[:path]= File.dirname(file_path)
-    v_info[:video_format]=video_format
-    v_info[:filename]=filename
-    v_info[:gsv_number]=gsv_number
-    v_info
+      v_info[:path]= File.dirname(file_path)
+      v_info[:video_format]=video_format
+      v_info[:filename]=filename
+      v_info[:gsv_number]=gsv_number
+      v_info
+    rescue err
+      raise err.Exception
+    end
   end
 
   # use ffmpeg or other video software to get the video basic information
   # return the subset of basic information of one video
   def self.record_video_info(video_path)
+    p video_path
     if (!File.exist?(video_path))
       raise Exception.new(error_info(:ERROR_002))
     end
 
-    video_info=`#{$transcode_cmd} -i #{video_path} 2>&1`
-    write_log_to_file(video_info, File.join("#{$upload_video_info_path}", File.basename(video_path)+".log"))
+    #video_info=`#{$transcode_cmd} -i #{video_path} 2>&1`
+    video_info="
+    ffmpeg version 1.0 Copyright (c) 2000-2012 the FFmpeg developers
+  built on Oct 15 2012 21:17:26 with gcc 4.4.6 (GCC) 20120305 (Red Hat 4.4.6-4)
+  configuration: --enable-gpl --enable-libmp3lame --enable-libtheora --enable-libfaac --enable-libvo-aacenc --enable-libvorbis --enable-libvpx --enable-libx264 --enable-version3 --enable-nonfree
+  libavutil      51. 73.101 / 51. 73.101
+  libavcodec     54. 59.100 / 54. 59.100
+  libavformat    54. 29.104 / 54. 29.104
+  libavdevice    54.  2.101 / 54.  2.101
+  libavfilter     3. 17.100 /  3. 17.100
+  libswscale      2.  1.101 /  2.  1.101
+  libswresample   0. 15.100 /  0. 15.100
+  libpostproc    52.  0.100 / 52.  0.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'f_00add1':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 1
+    compatible_brands: isomavc1
+    creation_time   : 2013-05-26 04:01:14
+  Duration: 00:06:49.36, start: 0.000000, bitrate: 560 kb/s
+    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 672x380 [SAR 1:1 DAR 168:95], 510 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc
+    Metadata:
+      creation_time   : 2013-05-26 04:01:14
+      handler_name    : GPAC ISO Video Handler
+    Stream #0:1(und): Audio: aac (mp4a / 0x6134706D), 44100 Hz, stereo, s16, 48 kb/s
+    Metadata:
+      creation_time   : 2013-05-26 04:01:14
+      handler_name    : GPAC ISO Audio Handler
+At least one output file must be specified
+"
+
+    filename=File.basename(video_path)
+    p "#{Rails.root}/log/upload/#{filename}.log"
+    write_log_to_file(video_info, "#{Rails.root}/log/upload/#{filename}.log")
     if ($? != 0)
       msg=video_info.split("\n")[-1]
       if (msg !~ %r{At least one output file must be specified})
@@ -158,7 +195,7 @@ echo ${jobId}\";${qstat}\"
 
   # check the video format is legal
   def self.check_extension(extension)
-    file_reg=%r{\.(#{$allow_video_extensions.split(";").join("|")})}i
+    file_reg=%r{\.(#{$VTRANS_CONFIG['allow_extension'].split(';').join('|')})}i
     if ((extension=~file_reg)==nil)
       raise Exception.new("extension #{extension} is not available!")
     end

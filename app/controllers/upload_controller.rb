@@ -2,10 +2,12 @@
 class UploadController < ApplicationController
   layout 'basic'
   include ActionController::RequestForgeryProtection
+
   before_filter :authenticate_user!
 
   def index
     session[:authenticity_token]=form_authenticity_token
+    Rails.logger.info $VTRANS_CONFIG['upload_path']
     respond_to do |format|
       format.html
     end
@@ -20,6 +22,10 @@ class UploadController < ApplicationController
       for id in videoIds
         u=Upload.where(:id => id, :user_id => current_user.id)[0]
         begin
+          u_path=File.join(u.path, u.filename+"."+u.video_format)
+          if File.exist? u_path
+            FileUtils.remove_file(u_path)
+          end
           u.destroy
           done_cnt+=1
         rescue Exception => err
@@ -32,6 +38,7 @@ class UploadController < ApplicationController
       info[:error_cnt]=error_cnt
       render :json => info
     rescue Exception => err
+      Rails.logger.debug err.message
       render :json => {:flag => false, :msg => err.message}
     end
 
@@ -40,23 +47,35 @@ class UploadController < ApplicationController
   def create
     info={:flag => nil}
     begin
-      path=(params[:path]==nil) ? $default_upload_file_path : params[:path]
+      # check the upload is validated
+      path=params[:path]
+      if path == '' or path == nil?
+        raise Exception.new('目标路径不能为空')
+      end
+
       original_filename=params[:Filedata].original_filename
       file_path =File.join(path, original_filename)
       dest_dirname=File.dirname(file_path)
+
       if !Dir.exists?(dest_dirname)
         FileUtils.makedirs(dest_dirname)
       end
+
       FileUtils.mv(params[:Filedata].tempfile.path, file_path)
       v_info=VideoHelper.get_video_info_by_path(file_path)
       v_info[:user_id]=current_user.id.to_s
       Upload.create(v_info)
+
       info[:flag]=true
       render :json => info
     rescue => err
+      Rails.logger.debug err.message
+      if File.exist? file_path
+        FileUtils.remove_file file_path
+      end
+
       info[:flag]=false
       info[:msg]= {:type => VideoHelper.error_info(:ERROR_002), :info => err.message}
-      p info
       render :json => info
     end
   end
@@ -78,7 +97,7 @@ class UploadController < ApplicationController
     begin
       info={:flag => true, :error => false, :data => {}}
       params[:data].each_pair do |key, filename|
-        if (File.exist?(File.join($default_upload_file_path, filename)))
+        if (File.exist?(File.join($VTRANS_CONFIG['upload_path'], filename)))
           info[:data][key]={:msg => filename+VideoHelper.error_info(:ERROR_004)}
         end
       end
@@ -86,9 +105,9 @@ class UploadController < ApplicationController
         info[:flag]=false
       end
     rescue Exception => err
+      Rails.logger.debug err.message
       info={:error => true, :msg => err.message}
     end
-    p info
     render :json => info
   end
 
@@ -100,7 +119,7 @@ class UploadController < ApplicationController
       if (trans==nil || trans.user_id!=current_user.id)
         raise Exception.new(VideoHelper.error_info(:ERROR_007))
       end
-      log_file_path=File.join($upload_video_info_path, trans.filename+"."+trans.video_format+".log")
+      log_file_path="#{Rails.root}/log/upload/#{trans.filename}.#{trans.video_format}.log"
       if (File.exist?(log_file_path))
         content=IO.read(log_file_path)
         info[:flag]=true
@@ -109,6 +128,7 @@ class UploadController < ApplicationController
         raise Exception.new(VideoHelper.error_info(:ERROR_007))
       end
     rescue Exception => err
+      Rails.logger.debug err.message
       info[:flag]=false
       info[:msg]=err.message
     end

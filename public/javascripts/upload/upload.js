@@ -8,7 +8,6 @@
 
 (function ($) {
 
-
     $.deleteFiles = $.fn.deleteFiles = function (fileIds, token) {
         $.post('upload/delete', {data:fileIds, authenticity_token:token}, function (result) {
             if (result['flag'] == true) {
@@ -39,7 +38,7 @@
                             .append($('<td/>').attr("class", "time").html('<input disabled value="' + data[a]['created_at'] + '"/>'))
                             .append($('<td/>').attr('class', 'others')
                             .append($("<a/>").attr("href", "javascript:$.showVideoInfoFromUpload('" + data[a]['id'] + "')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))
-                            .append($('<a/>').attr("href", "javascript:$.deleteFiles([" + data[a]['id'] + "],'" + token + "')").attr('title', '删除记录').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-trash')))
+                           // .append($('<a/>').attr("href", "javascript:$.deleteFiles([" + data[a]['id'] + "],'" + token + "')").attr('title', '删除记录').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-trash')))
                         )
                         fileListBlock.append(ytd)
                     }

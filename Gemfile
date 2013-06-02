@@ -18,3 +18,4 @@ end
 gem 'execjs'
 gem 'therubyracer'
 gem 'devise'
+gem 'thin'

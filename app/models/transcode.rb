@@ -1,3 +1,4 @@
+# coding: utf-8
 class Transcode < ActiveRecord::Base
 
   attr_accessible :user_id, :filename, :gsv_number, :path, :video_format, :frame_size, :duration,
