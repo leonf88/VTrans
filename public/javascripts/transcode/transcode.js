@@ -52,7 +52,7 @@
         if (new_params.ac)
             params.ac = new_params.ac
 
-        console.log(params)
+//        console.log(params)
         return params
     }
 
@@ -103,7 +103,7 @@
             var done_index = 0
 //            var transQueue = {} // {id1:{fileID:xxx, original:xxx, target:xxx}, id2:{fileID:xxx, original:xxx, target:xxx},...}
             if (result['flag'] == true) {
-                console.log(result['data']['prepare'])
+//                console.log(result['data']['prepare'])
                 for (var d in result['data']['prepare']) {
 
                     var sour = result['data']['prepare'][d].original
@@ -186,7 +186,7 @@
 
     $.showVideoInfo = $.fn.showVideoInfo = function (vId, type) {
         $.getJSON('transcode/video_info', {id: vId, type: type}, function (result) {
-            console.log(result)
+//            console.log(result)
             $("#video_info .filename").html(result['filename'])
             if (result['flag']) {
                 $("#video_info .content").html(result['content'].replace(/[\r\n|\r|\n]/gi, "<br/>"))
@@ -199,7 +199,7 @@
     }
 
     $.updateDefaultParams = $.fn.updateDefaultParams = function (ctagBlocks, params) {
-        console.log(ctagBlocks)
+//        console.log(ctagBlocks)
         ctagBlocks.each(function () {
             $(this).html($.formatParams(params))
         })

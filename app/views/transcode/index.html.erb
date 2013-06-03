@@ -18,7 +18,6 @@
 
         var transQueue = data['transQueue']    // {id1:{fileID:xxx, original:xxx, target:xxx}, id2:{fileID:xxx, original:xxx, target:xxx},...}
         var doneQueue = data['doneQueue']
-        console.log(doneQueue)
         var trans_index = 0
 
         $('#add_files').dialog({
@@ -178,7 +177,7 @@
                 $.post('transcode/status', {gsv_list: onTransIDs, authenticity_token: auth_token}, function (result) {
                     for (var vID in result) {
                         var info = result[vID]
-                        console.log(transQueue[vID])
+//                        console.log(transQueue[vID])
                         if (info['status'] == 2) {
                             transQueue[vID].target.status = "出错"
                             errorQueueNew[vID] = transQueue[vID]

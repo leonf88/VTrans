@@ -138,7 +138,7 @@
             function bindTree(t) {
                 $(t).find('SPAN A').each(function () {
                     $(this).unbind().bind('click', function () {
-                        console.log($(this).attr('rel'))
+//                        console.log($(this).attr('rel'))
                         proc($(this).attr('rel'));
                         var curBlock = $(this).parent().parent()
                         if (curBlock.hasClass('directory')) {
@@ -176,7 +176,7 @@
 
     $.showVideoInfoFromUpload = $.fn.showVideoInfoFromUpload = function (vId) {
         $.getJSON('upload/video_info', {id:vId}, function (result) {
-            console.log(result)
+//            console.log(result)
             $("#video_info .filename").html(result['filename'])
             if (result['flag']) {
                 $("#video_info .content").html(result['content'].replace(/[\r\n|\r|\n]/gi, "<br/>"))
