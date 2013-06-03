@@ -331,9 +331,9 @@
                         }
                     }
                     $("#trans_done input[type='checkbox'][class='select-all-hook']:checked").attr("checked", false)
+                    $.updateIndexNum($("#trans_done_list"), "item-index")
                 }, 'json')
             }
-            $.updateIndexNum($("#trans_done_list"), "item-index")
         })
 
         $("#trans_refresh").click(function () {
