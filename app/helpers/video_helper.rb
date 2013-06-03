@@ -2,26 +2,31 @@
 require "digest/md5"
 
 module VideoHelper
+
+  @transcode_info_dir="#{Rails.root}/log/transcode"
+  @default_pbs_dir="#{Rails.root}/log/torque"
   # use openPBS, e.g. torque, to transcode the video
   # generate a pbs job configuration file,
   # submit the pbs job to openPBS server
   # return the pbs job id and its status
   def self.transfer_by_pbs(transObj)
     cmd=get_cmd(transObj)
-    pbs_job_filename=File.join($default_pbs_path, transObj.gsv_number+".pbs")
+    pbs_job_filename=File.join(@default_pbs_dir, transObj.gsv_number+".pbs")
 
     pbs_cmd="#PBS -S /bin/bash
-#PBS -d #{$transcode_video_info_path}
+#PBS -d #{@transcode_info_dir}
 #PBS -l nodes=1:ppn=1
 #PBS -V
 #PBS -N #{transObj.gsv_number}
-#PBS -q #{$default_pbs_job_queue}
+#PBS -q #{$VTRANS_CONFIG['pbs_job_queue']}
 
 export LD_LIBRARY_PATH=/usr/local/lib/
 
 #{cmd} 2>&1
     "
-
+    if !Dir.exist? @default_pbs_dir
+      FileUtils.makedirs(@default_pbs_dir)
+    end
     pbs_job_file=File.new(pbs_job_filename, 'w')
     pbs_job_file.write(pbs_cmd)
     pbs_job_file.close
@@ -33,10 +38,10 @@ if [ \"$?\" = \"0\" ]; then
   qstat=\`qstat ${jobId} 2>/dev/null | tail -n1 | awk \'{print $5}\'\`
 fi
 
-echo ${jobId}\";${qstat}\"
+echo -e ${jobId}\";${qstat}\"
     "
 
-    running_file=File.new(File.join($default_pbs_path, "_running_file"), 'w')
+    running_file=File.new(File.join(@default_pbs_dir, "_running_file"), 'w')
     running_file.write(running_cmd)
     running_file.close
     %x[chmod +x #{running_file.path}]
@@ -44,7 +49,7 @@ echo ${jobId}\";${qstat}\"
     pbs_job_info=%x[bash -c #{running_file.path}]
     arr=pbs_job_info.split(';')
     pbs_job_id=arr[0]
-    pbs_job_stat=arr[1]
+    pbs_job_stat=arr[1][0]
 
     if (pbs_job_stat == nil)
       raise Exception.new(error_info(:ERROR_003))
@@ -71,7 +76,7 @@ echo ${jobId}\";${qstat}\"
     if ((job_stat)==trans_status(:COMPLETE) || job_stat_info == "" || job_stat_info == nil)
       gsv=transObj.gsv_number
       seq=transObj.pbs_job_id.split('.')[0]
-      log_file=File.join($transcode_video_info_path, gsv+".o"+seq)
+      log_file="#{@transcode_info_dir}/#{gsv}.o#{seq}"
       log_lines=VideoHelper.get_log_info(log_file)
 
       if (log_lines=~%r{video:.*? audio:.*? subtitle:.*? global headers:.*? muxing overhead .*?})
@@ -89,14 +94,13 @@ echo ${jobId}\";${qstat}\"
         job_stat= trans_status(:ERROR)
       end
     end
-
     job_stat
   end
 
   def self.transfer_by_transObj(transObj)
     cmd=get_cmd(transObj)
 
-    log_file=File.join($upload_video_info_path, transObj.gsv_number+".log")
+    log_file="#{Rails.root}/log/upload/#{transObj.gsv_number}.log"
     stat=system "#{cmd} >#{log_file} 2>&1 &"
 
     if (!stat)
@@ -131,7 +135,7 @@ echo ${jobId}\";${qstat}\"
       v_info[:filename]=filename
       v_info[:gsv_number]=gsv_number
       v_info
-    rescue err
+    rescue => err
       raise err.Exception
     end
   end
@@ -139,44 +143,14 @@ echo ${jobId}\";${qstat}\"
   # use ffmpeg or other video software to get the video basic information
   # return the subset of basic information of one video
   def self.record_video_info(video_path)
-    p video_path
     if (!File.exist?(video_path))
       raise Exception.new(error_info(:ERROR_002))
     end
 
-    #video_info=`#{$transcode_cmd} -i #{video_path} 2>&1`
-    video_info="
-    ffmpeg version 1.0 Copyright (c) 2000-2012 the FFmpeg developers
-  built on Oct 15 2012 21:17:26 with gcc 4.4.6 (GCC) 20120305 (Red Hat 4.4.6-4)
-  configuration: --enable-gpl --enable-libmp3lame --enable-libtheora --enable-libfaac --enable-libvo-aacenc --enable-libvorbis --enable-libvpx --enable-libx264 --enable-version3 --enable-nonfree
-  libavutil      51. 73.101 / 51. 73.101
-  libavcodec     54. 59.100 / 54. 59.100
-  libavformat    54. 29.104 / 54. 29.104
-  libavdevice    54.  2.101 / 54.  2.101
-  libavfilter     3. 17.100 /  3. 17.100
-  libswscale      2.  1.101 /  2.  1.101
-  libswresample   0. 15.100 /  0. 15.100
-  libpostproc    52.  0.100 / 52.  0.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'f_00add1':
-  Metadata:
-    major_brand     : isom
-    minor_version   : 1
-    compatible_brands: isomavc1
-    creation_time   : 2013-05-26 04:01:14
-  Duration: 00:06:49.36, start: 0.000000, bitrate: 560 kb/s
-    Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 672x380 [SAR 1:1 DAR 168:95], 510 kb/s, 23.98 fps, 23.98 tbr, 24k tbn, 47.95 tbc
-    Metadata:
-      creation_time   : 2013-05-26 04:01:14
-      handler_name    : GPAC ISO Video Handler
-    Stream #0:1(und): Audio: aac (mp4a / 0x6134706D), 44100 Hz, stereo, s16, 48 kb/s
-    Metadata:
-      creation_time   : 2013-05-26 04:01:14
-      handler_name    : GPAC ISO Audio Handler
-At least one output file must be specified
-"
+    video_info=`#{$VTRANS_CONFIG['trans_cmd']} -i #{video_path} 2>&1`
 
     filename=File.basename(video_path)
-    p "#{Rails.root}/log/upload/#{filename}.log"
+    p video_info
     write_log_to_file(video_info, "#{Rails.root}/log/upload/#{filename}.log")
     if ($? != 0)
       msg=video_info.split("\n")[-1]
@@ -207,7 +181,7 @@ At least one output file must be specified
       raise Exception.new(error_info(:ERROR_005)+" filename is empty!")
     end
     if (params[:path]=="" && params[:path]==nil)
-      params[:path]=$default_transcode_file_path
+      params[:path]=$VTRANS_CONFIG['trans_path']
     end
     if (params[:vcodec]=="" && params[:vcodec]==nil)
       raise Exception.new(error_info(:ERROR_005)+" video codec is null! ")
@@ -255,9 +229,9 @@ At least one output file must be specified
     if (!File.exist? src_path)
       raise Exception.new(error_info(:ERROR_002))
     end
-    if (File.exist? dest_path)
-      raise Exception.new(error_info(:ERROR_004))
-    end
+    #if (File.exist? dest_path)
+    #  raise Exception.new(error_info(:ERROR_004))
+    #end
 
     src_dir=File.dirname(src_path)
     if (!Dir.exist? src_dir)
@@ -284,7 +258,7 @@ At least one output file must be specified
     end
     cmd1+= " -c:a #{transObj.acodec} "
     if (transObj.audio_bitrate!=0 && transObj.audio_bitrate!=nil)
-      cmd1+=" -ab #{transObj.audio_bitrate} "
+      cmd1+=" -ab #{transObj.audio_bitrate}k "
     end
     if (transObj.audio_sample_rate!=0 && transObj.audio_sample_rate!=nil)
       cmd1+=" -ar #{transObj.audio_sample_rate} "
@@ -303,7 +277,7 @@ At least one output file must be specified
       end
     end
 
-    "#{$transcode_cmd} -i #{src_path} #{cmd1} -y #{dest_path}"
+    "#{$VTRANS_CONFIG['trans_cmd']} -i #{src_path} #{cmd1} -y #{dest_path}"
   end
 
   def self.write_log_to_file(msg, log_path)

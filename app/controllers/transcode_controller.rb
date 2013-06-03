@@ -147,7 +147,7 @@ class TranscodeController < ApplicationController
         trans.save
         info[key]={:flag => true, :vID => trans.id}
       rescue Exception => err
-        p err
+        Rails.logger.debug err
         info[key]={:flag => false, :msg => err.message}
       end
     end
@@ -166,17 +166,18 @@ class TranscodeController < ApplicationController
           FileUtils.makedirs(trans[:path])
         end
         job_id, job_stat=VideoHelper.transfer_by_pbs(trans)
+        p job_id,job_stat
         trans.status=VideoHelper.parse_status_from_pbs_stat(job_stat)
         trans.pbs_job_id=job_id
         trans.save!
         info[key]={:flag => true, :status => VideoHelper.trans_status(:RUNNING)}
       rescue Exception => err
+        Rails.logger.debug err
         info[key]={:flag => false, :msg => err.message}
       end
     end
     render :json => info
   end
-
 
   # pbs job
   def status
@@ -204,6 +205,7 @@ class TranscodeController < ApplicationController
             info[vID]={:status => 3}
         end
       rescue Exception => err
+        Rails.logger.debug err
         trans.status=VideoHelper.trans_status(:ERROR)
         trans.save!
         info[vID]={:status => 2, :msg => err.message}
@@ -218,7 +220,7 @@ class TranscodeController < ApplicationController
     info={}
     params[:gsv_list].each_pair do |vID, gsv|
       begin
-        log_file=File.join($transcode_video_info_path, gsv+".log")
+        log_file="#{Rails.root}/log/video_info/#{gsv}.log"
         log_lines=VideoHelper.get_log_info(log_file)
         last_line=log_lines.split("\n")[-1]
         p last_line
@@ -295,7 +297,6 @@ class TranscodeController < ApplicationController
     rescue => err
       info[:msg]= "Internal Error ("+err.message+")"
     end
-    p info
     render :json => info
   end
 
@@ -331,8 +332,7 @@ class TranscodeController < ApplicationController
       if ((params[:type]=='0' && trans==nil) || params[:type=='1']&&(trans==nil || trans.user_id!=current_user.id))
         raise Exception.new(VideoHelper.error_info(:ERROR_007))
       end
-      log_file_path=File.join($upload_video_info_path, trans.filename+"."+trans.video_format+".log")
-      p log_file_path
+      log_file_path="#{Rails.root}/log/upload/#{trans.filename}.#{trans.video_format}.log"
       if (File.exist?(log_file_path))
         content=IO.read(log_file_path)
         info[:flag]=true

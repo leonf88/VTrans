@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
     var auth_token = '<%=session[:authenticity_token] %>'
-    var default_server_path= '<%=$default_server_path %>'
+    var default_server_path= '<%=$VTRANS_CONFIG['server_path'] %>'
     $(function () {
         $("#trans_main").tabs()
         $("#add_files").tabs()
@@ -211,7 +211,6 @@
                 }, 'json')
             } else {
                 clearInterval(intervalID)
-                console.log(123)
                 intervalID = undefined
             }
         }
@@ -623,7 +622,7 @@
     <tr class="output-path">
       <td class="tt">目标路径</td>
       <td>
-        <input disabled="disabled" name="path" value="<%= $default_transcode_file_path %>"/>
+        <input disabled="disabled" name="path" value="<%= $VTRANS_CONFIG['trans_path'] %>"/>
         <a id="path_select" class="ui-state-default ui-corner-all need-hover" title="选择目标路径"><span class="ui-icon ui-icon-folder-open"></span></a>
       </td>
     </tr>
@@ -651,6 +650,8 @@
       <td>
         <select name="vcodec" disabled="disabled">
           <option value="libx264">H.264/AVC(X264)</option>
+          <option value="">H.263</option>
+          <option value="">AVS</option>
         </select>
       </td>
     </tr>
@@ -739,7 +740,7 @@
       <td class="tt">编码</td>
       <td>
         <select name="acodec" disabled="disabled">
-          <option value="libfaac">AAC</option>
+          <option value="libfdk_aac">AAC</option>
         </select>
       </td>
     </tr>
