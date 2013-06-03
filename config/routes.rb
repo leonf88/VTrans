@@ -10,6 +10,7 @@ VTrans::Application.routes.draw do
       post 'create' => 'upload#create'
       get 'index'
       get 'video_info'
+      get 'download/:id' => 'upload#download'
     end
   end
 

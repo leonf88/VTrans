@@ -135,4 +135,22 @@ class UploadController < ApplicationController
 
     render :json => info
   end
+
+  def download
+    video=Upload.find(params[:id])
+
+    if (video==nil || video.user_id!=current_user.id)
+      redirect_to upload_path, :notice => "没有记录，下载失败！"
+    end
+
+    file_whole_name=video.filename+"."+video.video_format
+    file_path=File.join(video.path, file_whole_name)
+    if (File.exist?(file_path))
+      io=File.open(file_path)
+      io.binmode
+      send_data(io.read, :filename => file_whole_name, :disposition => 'attachment')
+    else
+      redirect_to upload_path, :notice => "文件不存在，下载失败！"
+    end
+  end
 end
