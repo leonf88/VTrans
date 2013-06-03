@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(:version => 20121127123308) do
     t.datetime "complete_time"
     t.integer  "cost_time"
     t.string   "status",            :limit => 10,                                               :null => false
-    t.string   "pbs_job_id",        :limit => 20
+    t.string   "pbs_job_id",        :limit => 50
     t.integer  "user_id"
     t.integer  "video_source_id"
     t.datetime "created_at",                                                                    :null => false

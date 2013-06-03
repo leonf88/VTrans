@@ -1,6 +1,6 @@
 /**
  * Created with JetBrains RubyMine.
- * User: valder
+ * User: liangfan
  * Date: 12-11-22
  * Time: 上午2:20
  * To change this template use File | Settings | File Templates.
@@ -128,8 +128,8 @@
                     ))
 //                        .after($('<a/>').attr('title', '删除').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-trash')))
                     queueBlock.append(ytd)
-
                 }
+
                 for (var i in result['data']['done']) {
                     var vInfo = result['data']['done'][i]
                     var fileID = 'DONE_TRANS_' + (done_index++)
@@ -161,8 +161,6 @@
         return {transQueue:transQueue, doneQueue:doneQueue}
     }
 
-
-
     $.showVideoInfo = $.fn.showVideoInfo = function (vId, type) {
         $.getJSON('transcode/video_info', {id:vId, type:type}, function (result) {
             console.log(result)
@@ -176,7 +174,6 @@
         })
         $("#video_info").dialog("open")
     }
-
 
     $.updateDefaultParams = $.fn.updateDefaultParams = function (ctagBlocks, params) {
         console.log(ctagBlocks)

@@ -1,6 +1,6 @@
 /**
  * Created with JetBrains RubyMine.
- * User: valder
+ * User: liangfan
  * Date: 12-11-22
  * Time: 上午2:20
  * To change this template use File | Settings | File Templates.

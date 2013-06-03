@@ -278,7 +278,6 @@ class TranscodeController < ApplicationController
 
         #loop through all files
         files=[]
-        p params[:fileExt]
         if (params[:fileExt]!=nil && params[:fileExt]!="")
           Dir.glob("*.{#{params[:fileExt].split(';').join(',')}}") do |x|
             if not File.file?(x.untaint) then

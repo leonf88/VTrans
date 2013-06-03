@@ -22,7 +22,7 @@ class CreateTranscodes < ActiveRecord::Migration
       t.datetime :complete_time, :null => true
       t.integer :cost_time, :null => true
       t.string :status, :null => false, :limit => 10
-      t.string :pbs_job_id, :null => true, :limit => 20
+      t.string :pbs_job_id, :null => true, :limit => 50
 
       t.references :user, :index => true, :null => true
       t.references :video_source, :index => true, :null => true

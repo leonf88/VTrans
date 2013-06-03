@@ -296,17 +296,6 @@
             }
         })
 
-//        $.test123 = function () {
-//            $("body").append(123)
-//            if ((cnt++) > 5) {
-//                clearTimeout(trid)
-//                console.log(trid)
-//            }
-//
-//        }
-//        var cnt = 0
-//        var trid = setTimeout("$.test123()", 5000)
-
         $("#trans_cancel").click(function () {
             var vIDs = []
             $("#trans_queue_list input[type='checkbox']:checked").each(function () {
@@ -380,6 +369,7 @@
                             $("#" + transQueue[vID].fileID).find('.status').html("出错").css('color', 'red')
                             $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
                             delete transQueue[vID]
+                            gsv_length--
                         } else if (info['status'] == 1) {
                             transQueue[vID].target.status = "等待"
                             $("#" + transQueue[vID].fileID).find('.status').html("等待").css('font-weight', 'green')
@@ -408,7 +398,7 @@
                 $("#remote_files").fileTree({
                     root:default_server_path,
                     script:'transcode/file_list',
-                    fileExt:'<%= $allow_video_extensions%>'
+                    fileExt:'<%= $VTRANS_CONFIG['allow_extension']%>'
                 }, function (file) {
                 })
             }

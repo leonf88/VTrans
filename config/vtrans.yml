@@ -1,15 +1,11 @@
-pbs_job_queue: "batch"                            # the PBS job queue name
-trans_cmd: "/opt/ffmpeg/bin/ffmpeg"               # the transcode tools path, e.g. ffmpeg
-server_path: "/home/valder"                       # the transcode video basic directory
-upload_path: "/home/valder/data/vtrans/upload"    # the upload storage directory
-trans_path: "/home/valder/data/vtrans/transcode"  # the transcode video storage directory
+pbs_job_queue: "batch"                    # the PBS job queue name
+trans_cmd: "/usr/local/bin/ffmpeg"        # the transcode tools path, e.g. ffmpeg
+server_path: "/home/vtrans"               # the transcode video basic directory
+upload_path: "/home/vtrans/data/upload"   # the upload storage directory
+trans_path: "/home/vtrans/data/transcode" # the transcode video storage directory
 
 allow_extension: "mp4;3gp;flv;mpg"
 fileDesc: "File(*.mp4;*.3pg;*.mpg*;*.flv)"
 max_file_size: "512MB"
-
-#$download_video_info_path=File.join(Rails.root, "log", "download")
-#$transcode_video_info_path=File.join(Rails.root, "log", "transcode")
-#$default_pbs_path=File.join(Rails.root, "log", "torque")
 
 

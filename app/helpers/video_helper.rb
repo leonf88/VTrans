@@ -20,12 +20,15 @@ module VideoHelper
 #PBS -N #{transObj.gsv_number}
 #PBS -q #{$VTRANS_CONFIG['pbs_job_queue']}
 
-export LD_LIBRARY_PATH=/usr/local/lib/
+export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}
 
 #{cmd} 2>&1
     "
     if !Dir.exist? @default_pbs_dir
       FileUtils.makedirs(@default_pbs_dir)
+    end
+    if !Dir.exist? @transcode_info_dir
+      FileUtils.makedirs(@transcode_info_dir)
     end
     pbs_job_file=File.new(pbs_job_filename, 'w')
     pbs_job_file.write(pbs_cmd)
