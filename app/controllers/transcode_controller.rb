@@ -90,7 +90,19 @@ class TranscodeController < ApplicationController
       end
       info[:flag]=true
       info[:data]=data
-      #p info
+      render :json => info
+    rescue => err
+      info[:msg]=err
+      render :json => info
+    end
+  end
+
+  def show
+    info={:flag => false}
+    begin
+      r_data=Transcode.find(params[:id].to_i)
+      info[:flag]=true
+      info[:data]=r_data
       render :json => info
     rescue => err
       info[:msg]=err
@@ -107,9 +119,14 @@ class TranscodeController < ApplicationController
         if (trans==nil || trans.user_id!=current_user.id)
           raise Exception.new(VideoHelper.error_info(:ERROR_007))
         end
+        v_path=File.join(trans.path, trans.filename+"."+trans.video_format)
+        if File.exist? v_path
+          File.delete v_path
+        end
         trans.destroy
         info[vID]={:flag => true}
-      rescue Exception => err
+      rescue => err
+        Rails.logger.debug err
         info[vID]={:flag => false, :msg => err.message}
       end
     end
@@ -166,7 +183,7 @@ class TranscodeController < ApplicationController
           FileUtils.makedirs(trans[:path])
         end
         job_id, job_stat=VideoHelper.transfer_by_pbs(trans)
-        p job_id,job_stat
+        p job_id, job_stat
         trans.status=VideoHelper.parse_status_from_pbs_stat(job_stat)
         trans.pbs_job_id=job_id
         trans.save!

@@ -11,18 +11,18 @@
     $.parseParams = $.fn.parseParams = function () {
         var p = $("#params_setting")
         return {
-            filename:p.find('[name=filename]').val(),
-            path:p.find('[name=path]').val(),
-            video_format:p.find('[name=video_format]').val(),
-            vcodec:p.find('[name=vcodec]').val(),
-            frame_size:p.find('[name=frame_size]').val(),
-            aspect:p.find('[name=aspect]').val(),
-            fps:p.find('[name=fps]').val(),
-            bitrate:p.find('[name=bitrate]').val(),
-            acodec:p.find('[name=acodec]').val(),
-            ar:p.find('[name=ar]').val(),
-            ab:p.find('[name=ab]').val(),
-            ac:p.find('[name=ac]').val()
+            filename: p.find('[name=filename]').val(),
+            path: p.find('[name=path]').val(),
+            video_format: p.find('[name=video_format]').val(),
+            vcodec: p.find('[name=vcodec]').val(),
+            frame_size: p.find('[name=frame_size]').val(),
+            aspect: p.find('[name=aspect]').val(),
+            fps: p.find('[name=fps]').val(),
+            bitrate: p.find('[name=bitrate]').val(),
+            acodec: p.find('[name=acodec]').val(),
+            ar: p.find('[name=ar]').val(),
+            ab: p.find('[name=ab]').val(),
+            ac: p.find('[name=ac]').val()
         };
     }
 
@@ -81,8 +81,8 @@
                             .append($('<td/>').attr("class", "filename").html($('<input/>').attr('disabled', true).attr('value', orig.filename).attr('title', orig.filename)))
                             .append($('<td/>').attr("class", "info").html($.formatVideoInfo(orig)))
                             .append($('<td/>').attr('class', 'others')
-                            .append($("<a/>").attr("href", "javascript:$.showVideoInfoFromUpload('" + orig.id + "')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))
-                        )
+                                .append($("<a/>").attr("href", "javascript:$.showVideoInfoFromUpload('" + orig.id + "')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))
+                            )
                         flistBlock.append(ytd)
                     }
                     $.updateIndexNum(flistBlock, "item-index")
@@ -114,7 +114,7 @@
                     targ.gsv_number = tar_resp.gsv_number
                     targ.status = tar_resp.status
                     targ.filename = 'trans-' + sour.filename
-                    transQueue[targ.id] = {fileID:fileID, original:sour, target:targ}
+                    transQueue[targ.id] = {fileID: fileID, original: sour, target: targ}
 
                     var ytd = $("<tr/>").attr("id", fileID)
                     ytd.append($('<td/>').attr("class", "item-index").append($('<input>').attr("type", "checkbox").attr("class", "checkbox-item-hook").attr('value', targ.id)).append($('<span/>').attr("class", "index-hook")))
@@ -124,8 +124,8 @@
                         .append($('<td/>').attr("class", "video-format").html(targ.video_format))
                         .append($('<td/>').attr("class", "path").html("<input disabled value='" + targ.path + "' title='" + targ.path + "'/>"))
                         .append($('<td/>').attr('class', 'others').html($("<a/>").attr("href", "javascript:$.showVideoInfo('" + sour.id + "','0')").attr('title', '源信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info'))
-                        .after($('<a/>').attr("href", "javascript:$('#params_setting').val('" + targ.id + "','0').dialog('open')").attr('title', '设置').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))
-                    ))
+                            .after($('<a/>').attr("href", "javascript:$('#params_setting').val('" + targ.id + "','0').dialog('open')").attr('title', '设置').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))
+                        ))
 //                        .after($('<a/>').attr('title', '删除').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-trash')))
                     queueBlock.append(ytd)
                 }
@@ -133,7 +133,7 @@
                 for (var i in result['data']['done']) {
                     var vInfo = result['data']['done'][i]
                     var fileID = 'DONE_TRANS_' + (done_index++)
-                    doneQueue[vInfo.id] = {fileID:fileID, data:vInfo}
+                    doneQueue[vInfo.id] = {fileID: fileID, data: vInfo}
                     if (vInfo.complete_time == 'undefined' || vInfo.complete_time == "")
                         vInfo.complete_time = "没有记录"
                     var ytd = $("<tr/>").attr("id", fileID)
@@ -145,8 +145,8 @@
                         .append($('<td/>').attr("class", "done-time").html("<input disabled value='" + vInfo.complete_time + "' title='" + vInfo.complete_time + "'/>"))
                         .append($('<td/>').attr("class", "path").html("<input disabled value='" + vInfo.path + "' title='" + vInfo.path + "'/>"))
                         .append($('<td/>').attr('class', 'others')
-                        .append($("<a/>").attr("href", "transcode/download/" + vInfo.id).attr('title', '下载').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-arrowthick-1-s'))
-                        .after($("<a/>").attr("href", "javascript:$.showVideoInfo('" + vInfo.id + "','1')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))))
+                            .append($("<a/>").attr("href", "transcode/download/" + vInfo.id).attr('title', '下载').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-arrowthick-1-s'))
+                                .after($("<a/>").attr("href", "javascript:$.showVideoInfo('" + vInfo.id + "','1')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))))
 //                        .after($('<a/>').attr("href", "javascript:void(0)").attr('title', '删除').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))
                     doneBlock.append(ytd)
                 }
@@ -158,11 +158,34 @@
             }
 
         })
-        return {transQueue:transQueue, doneQueue:doneQueue}
+        return {transQueue: transQueue, doneQueue: doneQueue}
+    }
+
+    $.updateTransItem = $.fn.updateTransItem = function (vId, queue) {
+        var doneBlock=$("#trans_done_list")
+        $.getJSON('transcode/' + vId, {}, function (result) {
+            var f_ID = "DONE_TRANS_NEW_" + vId
+            var ytd = $("<tr/>").attr("id", f_ID)
+            var vInfo = result.data
+            queue[vId] = {data: vInfo, fileID: f_ID}
+            ytd.append($('<td/>').attr("class", "item-index").append($('<input>').attr("type", "checkbox").attr("class", "checkbox-item-hook").val(vInfo.id)).append($('<span/>').attr("class", "index-hook").html(0)))
+                .append($('<td/>').attr("class", "filename").html("<input disabled value='" + vInfo.filename + "'+title='" + vInfo.filename + "'/>"))
+                .append($('<td/>').attr("class", "video-format").html(vInfo.video_format))
+                .append($('<td/>').attr("class", "frame-size").html(vInfo.frame_size))
+                .append($('<td/>').attr("class", "data-size").html($.formatFileSize(vInfo.data_size)))
+                .append($('<td/>').attr("class", "done-time").html("<input disabled value='" + vInfo.complete_time + "' title='" + vInfo.complete_time + "'/>"))
+                .append($('<td/>').attr("class", "path").html("<input disabled value='" + vInfo.path + "' title='" + vInfo.path + "'/>"))
+                .append($('<td/>').attr('class', 'others')
+                    .append($("<a/>").attr("href", "transcode/download/" + vInfo.id).attr('title', '下载').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-arrowthick-1-s'))
+                        .after($("<a/>").attr("href", "javascript:$.showVideoInfo('" + vInfo.id + "','1')").attr('title', '详细信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info')))))
+//                        .after($('<a/>').attr("href", "javascript:void(0)").attr('title', '删除').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))
+            doneBlock.append(ytd)
+            $.updateIndexNum(doneBlock, "item-index")
+        })
     }
 
     $.showVideoInfo = $.fn.showVideoInfo = function (vId, type) {
-        $.getJSON('transcode/video_info', {id:vId, type:type}, function (result) {
+        $.getJSON('transcode/video_info', {id: vId, type: type}, function (result) {
             console.log(result)
             $("#video_info .filename").html(result['filename'])
             if (result['flag']) {
@@ -204,7 +227,7 @@
                 var curBlock = $(c)
                 var spanBlock = curBlock.find("span:first")
                 spanBlock.addClass('wait');
-                $.getJSON(o.script, { dir:t, fileExt:o.fileExt}, function (data) {
+                $.getJSON(o.script, { dir: t, fileExt: o.fileExt}, function (data) {
                     $(".jqueryFileTree.start").remove();
                     curBlock.find('.start').html('');
                     var content = "<ul class=\"jqueryFileTree\" style=\"display: none;\">"
@@ -232,8 +255,8 @@
                         curBlock.find('UL:hidden').show();
                     else
                         curBlock.find('UL:hidden').slideDown({
-                            duration:o.expandSpeed,
-                            easing:o.expandEasing
+                            duration: o.expandSpeed,
+                            easing: o.expandEasing
                         });
                     bindTree(curBlock);
                 });
@@ -253,7 +276,7 @@
                                 $(this).parent().addClass('exp')
                             } else {
                                 // Collapse
-                                curBlock.find('ul').slideUp({ duration:o.collapseSpeed, easing:o.collapseEasing });
+                                curBlock.find('ul').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
                                 $(this).parent().removeClass('exp')
                                 curBlock.removeClass('expanded').addClass('collapsed');
                             }

@@ -1,13 +1,11 @@
-
-
 <link rel="stylesheet" type="text/css" href="stylesheets/jqueryFileTree.css"/>
 <link rel="stylesheet" type="text/css" href="stylesheets/transcode.css"/>
 
-<script type="text/javascript" src="javascripts/transcode/transcode.js" ></script>
+<script type="text/javascript" src="javascripts/transcode/transcode.js"></script>
 
 <script type="text/javascript">
     var auth_token = '<%=session[:authenticity_token] %>'
-    var default_server_path= '<%=$VTRANS_CONFIG['server_path'] %>'
+    var default_server_path = '<%=$VTRANS_CONFIG['server_path'] %>'
     $(function () {
         $("#trans_main").tabs()
         $("#add_files").tabs()
@@ -20,16 +18,16 @@
 
         var transQueue = data['transQueue']    // {id1:{fileID:xxx, original:xxx, target:xxx}, id2:{fileID:xxx, original:xxx, target:xxx},...}
         var doneQueue = data['doneQueue']
+        console.log(doneQueue)
         var trans_index = 0
-        console.log(transQueue)
 
         $('#add_files').dialog({
-            autoOpen:false,
-            bgiframe:true,
-            modal:true,
-            width:990,
-            buttons:{
-                "确认":function () {
+            autoOpen: false,
+            bgiframe: true,
+            modal: true,
+            width: 990,
+            buttons: {
+                "确认": function () {
                     var type = 0
                     var postData = new Object()
                     var flag = false
@@ -56,9 +54,7 @@
                     }
 
                     if (flag) {
-                        console.log(postData)
-                        $.post('transcode', {type:type, data:postData, authenticity_token:auth_token}, function (result) {
-                            console.log(result)
+                        $.post('transcode', {type: type, data: postData, authenticity_token: auth_token}, function (result) {
                             for (var vID in postData) {
                                 if (result[vID]['flag']) {
                                     var fileID = 'TRANS_' + trans_index
@@ -69,7 +65,7 @@
                                     targ.gsv_number = tar_resp.gsv
                                     targ.status = tar_resp.status
                                     targ.filename = tar_resp.filename
-                                    transQueue[targ.id] = {fileID:fileID, original:sour, target:targ}
+                                    transQueue[targ.id] = {fileID: fileID, original: sour, target: targ}
                                     var ytd = $("<tr/>").attr('id', fileID)
                                     ytd.append($('<td/>').attr("class", "item-index").append($('<input>').attr("type", "checkbox").attr("class", "checkbox-item-hook").attr('value', targ.id)).append($('<span/>').attr("class", "index-hook")))
                                             .append($('<td/>').attr("class", "status").html(targ.status))
@@ -78,10 +74,10 @@
                                             .append($('<td/>').attr("class", "video-format").html(targ.video_format))
                                             .append($('<td/>').attr("class", "path").html("<input disabled value='" + targ.path + "' title='" + targ.path + "'/>"))
                                             .append($('<td/>').attr('class', 'others').html($("<a/>").attr("href", "javascript:$.showVideoInfo('" + sour.id + "','0')").attr('title', '源信息').attr('class', 'ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-info'))
-                                            .after($('<a/>').attr("href", "javascript:$('#params_setting').val('" + targ.id + "').dialog('open')").attr('title', '设置').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))))
+                                                    .after($('<a/>').attr("href", "javascript:$('#params_setting').val('" + targ.id + "').dialog('open')").attr('title', '设置').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))))
                                     $("#trans_queue_list").append(ytd)
 
-                                    console.log(transQueue)
+                                    //console.log(transQueue)
                                     trans_index++
                                 } else {
                                     alert(result[vID]['msg'])
@@ -95,18 +91,18 @@
                     }
                     $(this).dialog("close")
                 },
-                "取消":function () {
+                "取消": function () {
                     $(this).dialog("close")
                 }
             }
         })
 
         $('#params_setting').dialog({
-            autoOpen:false,
-            bgiframe:true,
-            width:400,
-            modal:true,
-            open:function (event, ui) {
+            autoOpen: false,
+            bgiframe: true,
+            width: 400,
+            modal: true,
+            open: function (event, ui) {
                 var params
                 var vID = $(this).val()
                 if (vID == 'default') {
@@ -129,18 +125,16 @@
                 $(this).find('[name=ab]').val(params.ab)
                 $(this).find('[name=ac]').val(params.ac)
             },
-            buttons:{
-                "确认":function () {
+            buttons: {
+                "确认": function () {
                     var vID = $(this).val()
                     if (vID == 'default') {
                         defaultMediaParams = $.parseParams()
                         delete defaultMediaParams.filename
                         $("#trans_queue_list").find("input[type='checkbox']:checked").each(function () {
-                            console.log($(this).parent().parent())
                             vID = $(this).val()
                             var params = transQueue[vID].target
                             transQueue[vID].target = $.parseParams2(params, defaultMediaParams)
-                            console.log(transQueue[vID].target)
                             $.updateTransQueueHtml($(this).parent().parent(), transQueue[vID].target)
                         })
                     }
@@ -153,20 +147,19 @@
                     }
                     $(this).dialog("close")
                 },
-                "取消":function () {
+                "取消": function () {
                     $(this).dialog("close")
                 }
             }
         })
 
 
-        var doneQueueNew = {}
+//        var doneQueueNew = {}
         var errorQueueNew = {}
         var onTransIDs = {}
         var onTransLength = 0
         var intervalID = undefined
 
-        console.log(transQueue)
         for (var vID in transQueue) {
             if (transQueue[vID].target.status == '等待' || transQueue[vID].target.status == '运行') {
                 onTransLength++
@@ -180,11 +173,12 @@
         }
 
         $.updateTransStatus = $.fn.updateTransStatus = function () {
-            console.log(onTransIDs)
+//            console.log(onTransIDs)
             if (onTransLength > 0) {
-                $.post('transcode/status', {gsv_list:onTransIDs, authenticity_token:auth_token}, function (result) {
+                $.post('transcode/status', {gsv_list: onTransIDs, authenticity_token: auth_token}, function (result) {
                     for (var vID in result) {
                         var info = result[vID]
+                        console.log(transQueue[vID])
                         if (info['status'] == 2) {
                             transQueue[vID].target.status = "出错"
                             errorQueueNew[vID] = transQueue[vID]
@@ -200,12 +194,17 @@
                             $("#" + transQueue[vID].fileID).find('.status').html("运行")
                         } else if (info['status'] == 3) {
                             transQueue[vID].target.status = "完成"
-                            doneQueueNew[vID] = transQueue[vID]
+                            var t = transQueue[vID].target
                             $("#" + transQueue[vID].fileID).find('.status').html("完成").css('font-weight', '600')
                             $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
+                            $("#" + transQueue[vID].fileID).fadeOut(2000, function () {
+                                $(this).remove();
+                            });
                             delete transQueue[vID]
                             delete onTransIDs[vID]
                             onTransLength--
+
+                            $.updateTransItem(t.id, doneQueue)
                         }
                     }
                 }, 'json')
@@ -216,10 +215,10 @@
         }
 
         $('#trans_process').dialog({
-            autoOpen:false,
-            bgiframe:true,
-            modal:true,
-            open:function (event, ui) {
+            autoOpen: false,
+            bgiframe: true,
+            modal: true,
+            open: function (event, ui) {
                 var $this = $(this).html('<table><tr class="check-input">\
                         <td class="name">检查输入文件：</td>\
                         <td class="status">未运行</td></tr>\
@@ -235,30 +234,25 @@
                     postData[vID] = transQueue[vID]
                 })
                 // {id1:{fileID:xxx, original:xxx, target:xxx}, id2:{fileID:xxx, original:xxx, target:xxx},...}
-                console.log(postData)
+//                console.log(postData)
                 if (flag) {
                     $this.find('.check-input .status').html('正在运行...')
                     var flag = true
-                    $.post('transcode/check', {data:postData, authenticity_token:auth_token}, function (result) {
+                    $.post('transcode/check', {data: postData, authenticity_token: auth_token}, function (result) {
                         var err_msg = $('<div/>').attr('class', 'error-info')
                         for (var vID in result) {
-                            console.log(result)
-                            console.log(result[vID]['flag'])
                             flag &= result[vID]['flag']
                             if (!result[vID]['flag']) {
                                 err_msg.append($("<p/>").html(postData[vID].target.filename + " has error: " + result[vID]['msg']))
                             } else {
                                 qualData[vID] = vID
-                                console.log(qualData)
                             }
                         }
-                        console.log(flag)
                         if (flag) {
                             $this.find('.check-input .status').html('通过')
                             if (flag) {
                                 $this.find('.check-output .status').html('正在运行...')
-                                $.post('transcode/submit', {data:qualData, authenticity_token:auth_token}, function (result) {
-                                    console.log(result)
+                                $.post('transcode/submit', {data: qualData, authenticity_token: auth_token}, function (result) {
                                     for (var vID in result) {
                                         flag &= result[vID]['flag']
                                         if (result[vID]['flag']) {
@@ -277,7 +271,6 @@
                                             onTransLength++
                                         }
                                         if (intervalID == undefined) {
-                                            console.log(onTransIDs)
                                             setTimeout('$.updateTransStatus()', 2000)
                                             intervalID = setInterval('$.updateTransStatus()', 10000)
                                         }
@@ -305,15 +298,13 @@
                 }
             })
             if (vIDs.length > 0) {
-                $.post('transcode/delete', {vIDs:vIDs, authenticity_token:auth_token}, function (result) {
+                $.post('transcode/delete', {vIDs: vIDs, authenticity_token: auth_token}, function (result) {
                     for (var id in result) {
                         var item = result[id]
-                        console.log(item)
                         if (item['flag'] == true) {
                             var params = transQueue[id]
                             $("#" + params.fileID).remove()
                             delete transQueue[id]
-                            console.log(transQueue)
                         }
                     }
                     $("#trans_queue input[type='checkbox'][class='select-all-hook']:checked").attr("checked", false)
@@ -331,10 +322,9 @@
                 }
             })
             if (vIDs.length > 0) {
-                $.post('transcode/delete', {vIDs:vIDs, authenticity_token:auth_token}, function (result) {
+                $.post('transcode/delete', {vIDs: vIDs, authenticity_token: auth_token}, function (result) {
                     for (var id in result) {
                         var item = result[id]
-                        console.log(item)
                         if (item['flag'] == true) {
                             var params = doneQueue[id]
                             $("#" + params.fileID).remove()
@@ -344,49 +334,11 @@
                     $("#trans_done input[type='checkbox'][class='select-all-hook']:checked").attr("checked", false)
                 }, 'json')
             }
+            $.updateIndexNum($("#trans_done_list"), "item-index")
         })
 
         $("#trans_refresh").click(function () {
-            var doneQueueNew = {}
-            var errorQueueNew = {}
-            var gsv_list = {}
-            var gsv_length = 0
-            $("#trans_queue_list input[type='checkbox']:checked").each(function () {
-                if ($(this).attr('disabled') == undefined || $(this).attr('disabled') == false) {
-                    var vID = $(this).val()
-                    gsv_list[vID] = vID
-                    gsv_length++
-                }
-            })
-            if (gsv_length > 0) {
-                $.post('transcode/status', {gsv_list:gsv_list, authenticity_token:auth_token}, function (result) {
-                    for (var vID in result) {
-                        var info = result[vID]
-                        if (info['status'] == 2) {
-                            transQueue[vID].target.status = "出错"
-                            errorQueueNew[vID] = transQueue[vID]
-                            errorQueueNew[vID].msg = info['msg']
-                            $("#" + transQueue[vID].fileID).find('.status').html("出错").css('color', 'red')
-                            $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
-                            delete transQueue[vID]
-                            gsv_length--
-                        } else if (info['status'] == 1) {
-                            transQueue[vID].target.status = "等待"
-                            $("#" + transQueue[vID].fileID).find('.status').html("等待").css('font-weight', 'green')
-                        } else if (info['status'] == 0) {
-                            transQueue[vID].target.status = "运行"
-                            $("#" + transQueue[vID].fileID).find('.status').html("运行")
-                        } else if (info['status'] == 3) {
-                            transQueue[vID].target.status = "完成"
-                            doneQueueNew[vID] = transQueue[vID]
-                            $("#" + transQueue[vID].fileID).find('.status').html("完成").css('font-weight', '600')
-                            $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
-                            delete transQueue[vID]
-                            gsv_length--
-                        }
-                    }
-                }, 'json')
-            }
+            $.updateTransStatus()
         })
 
         $("#upload_refresh").click(function () {
@@ -396,9 +348,9 @@
         $("#remote_files_rel").click(function () {
             if ($("#remote_files").html().trim() == "") {
                 $("#remote_files").fileTree({
-                    root:default_server_path,
-                    script:'transcode/file_list',
-                    fileExt:'<%= $VTRANS_CONFIG['allow_extension']%>'
+                    root: default_server_path,
+                    script: 'transcode/file_list',
+                    fileExt: '<%= $VTRANS_CONFIG['allow_extension']%>'
                 }, function (file) {
                 })
             }
@@ -407,39 +359,38 @@
         $("#path_select").click(function () {
             $("#simple_file_tree").dialog("open")
             $("#simple_file_tree .content").simpleFileTree({
-                root:default_server_path,
-                script:'transcode/file_list',
-                fileExt:"",
-                multiFolder:false
+                root: default_server_path,
+                script: 'transcode/file_list',
+                fileExt: "",
+                multiFolder: false
             }, function (file) {
                 $("#simple_file_tree .path:first input").val(file).attr('title', file)
             })
         })
 
         $("#simple_file_tree").dialog({
-            autoOpen:false,
-            bgiframe:true,
-            modal:true,
-            width:400,
-            buttons:{
-                "确认":function () {
+            autoOpen: false,
+            bgiframe: true,
+            modal: true,
+            width: 400,
+            buttons: {
+                "确认": function () {
                     var path = $(this).find(".path:first input").val()
-                    console.log($("#params_setting input[name='path']"))
                     $("#params_setting input[name='path']").val(path)
                     $(this).dialog("close")
                 },
-                "取消":function () {
+                "取消": function () {
                     $(this).dialog("close")
                 }
             }
         })
 
         $("#video_info").dialog({
-            autoOpen:false,
-            bgiframe:true,
-            modal:true,
-            width:800 ,
-            position:{my:'center', at:'top', of:window}
+            autoOpen: false,
+            bgiframe: true,
+            modal: true,
+            width: 800,
+            position: {my: 'center', at: 'top', of: window}
         })
     })
 
