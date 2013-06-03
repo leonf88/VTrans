@@ -22,7 +22,7 @@ According to my development environment, VTrans project require these software b
 INSTALL
 --
 
-[yaml install][0]
+[yaml install][0]  
 [ruby & rails][1]  
 [update rails mirror in China][2]
 [0]: http://collectiveidea.com/blog/archives/2011/10/31/install-ruby-193-with-libyaml-on-centos/
@@ -86,7 +86,10 @@ USAGE
      np = 2
      properties = cluster01
      ntype = cluster
-     status = rectime=1370243700,varattr=,jobs=,state=free,netload=551237319,gres=,loadave=0.43,ncpus=4,physmem=3961760kb,availmem=9139208kb,totmem=12149660kb,idletime=1703,nusers=4,nsessions=13,sessions=1000 1200 2082 2123 2163 2222 3317 13271 13316 14107 14958 1099 24267,uname=Linux liangfan 3.2.0-37-generic #58-Ubuntu SMP Thu Jan 24 15:28:10 UTC 2013 x86_64,opsys=linux
+     status = rectime=1370243700,varattr=,jobs=,state=free,netload=551237319,gres=,loadave=0.43,ncpus=4,
+        physmem=3961760kb,availmem=9139208kb,totmem=12149660kb,idletime=1703,nusers=4,nsessions=13,
+        sessions=1000 1200 2082 2123 2163 2222 3317 13271 13316 14107 14958 1099 24267,
+        uname=Linux liangfan 3.2.0-37-generic #58-Ubuntu SMP Thu Jan 24 15:28:10 UTC 2013 x86_64,opsys=linux
      mom_service_port = 15002
      mom_manager_port = 15003
      gpus = 0    
