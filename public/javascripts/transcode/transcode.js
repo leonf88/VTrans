@@ -181,6 +181,7 @@
 //                        .after($('<a/>').attr("href", "javascript:void(0)").attr('title', '删除').attr('class', 'cancel ui-state-default ui-corner-all need-hover').append($('<span/>').attr('class', 'ui-icon ui-icon-wrench')))
             doneBlock.append(ytd)
             $.updateIndexNum(doneBlock, "item-index")
+            $.bindCheckboxAll(doneBlock.parent())
         })
     }
 

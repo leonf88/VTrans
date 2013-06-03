@@ -196,7 +196,7 @@
                             var t = transQueue[vID].target
                             $("#" + transQueue[vID].fileID).find('.status').html("完成").css('font-weight', '600')
                             $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
-                            $("#" + transQueue[vID].fileID).fadeOut(2000, function () {
+                            $("#" + transQueue[vID].fileID).fadeOut(500, function () {
                                 $(this).remove();
                             });
                             delete transQueue[vID]
@@ -235,6 +235,7 @@
                 // {id1:{fileID:xxx, original:xxx, target:xxx}, id2:{fileID:xxx, original:xxx, target:xxx},...}
 //                console.log(postData)
                 if (flag) {
+                    $("#trans_queue .clearfix-all input[type='checkbox']").attr('checked', false)
                     $this.find('.check-input .status').html('正在运行...')
                     var flag = true
                     $.post('transcode/check', {data: postData, authenticity_token: auth_token}, function (result) {
@@ -332,6 +333,7 @@
                     }
                     $("#trans_done input[type='checkbox'][class='select-all-hook']:checked").attr("checked", false)
                     $.updateIndexNum($("#trans_done_list"), "item-index")
+                    $.bindCheckboxAll($("#trans_done_list").parent())
                 }, 'json')
             }
         })
