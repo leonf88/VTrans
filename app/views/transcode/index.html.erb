@@ -153,11 +153,9 @@
         })
 
 
-//        var doneQueueNew = {}
         var errorQueueNew = {}
         var onTransIDs = {}
         var onTransLength = 0
-        var intervalID = undefined
 
         for (var vID in transQueue) {
             if (transQueue[vID].target.status == '等待' || transQueue[vID].target.status == '运行') {
@@ -167,8 +165,8 @@
         }
 
         if (onTransLength != 0) {
-            setTimeout('$.updateTransStatus()', 2000)
-            intervalID = setInterval('$.updateTransStatus()', 10000)
+            time_span =  10000 + (onTransLength / 50) * 30 * 1000
+            setTimeout('$.updateTransStatus()', time_span)
         }
 
         $.updateTransStatus = $.fn.updateTransStatus = function () {
@@ -178,13 +176,13 @@
                     for (var vID in result) {
                         var info = result[vID]
                         if (info['status'] == 2) {
-//                            console.log(transQueue[vID])
                             transQueue[vID].target.status = "出错"
                             errorQueueNew[vID] = transQueue[vID]
                             errorQueueNew[vID].msg = info['msg']
                             $("#" + transQueue[vID].fileID).find('.status').html("出错").css('color', 'red')
                             $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
                             delete transQueue[vID]
+                            delete onTransIDs[vID]
                             onTransLength--
                         } else if (info['status'] == 1) {
                             transQueue[vID].target.status = "等待"
@@ -207,10 +205,9 @@
                             $.updateTransItem(t.id, doneQueue)
                         }
                     }
+                    time_span =  10000 + (onTransLength / 50) * 30 * 1000
+                    setTimeout('$.updateTransStatus()', time_span)
                 }, 'json')
-            } else {
-                clearInterval(intervalID)
-                intervalID = undefined
             }
         }
 
@@ -271,10 +268,8 @@
                                             onTransIDs[vID] = vID
                                             onTransLength++
                                         }
-                                        if (intervalID == undefined) {
-                                            setTimeout('$.updateTransStatus()', 2000)
-                                            intervalID = setInterval('$.updateTransStatus()', 10000)
-                                        }
+                                        time_span =  10000 + (onTransLength / 50) * 30 * 1000
+                                        setTimeout('$.updateTransStatus()', time_span)
 
                                         $this.delay(500).fadeOut(500, function () {
                                             $(this).dialog('close')

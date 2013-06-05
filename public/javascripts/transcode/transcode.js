@@ -113,7 +113,7 @@
                     targ.id = tar_resp.id
                     targ.gsv_number = tar_resp.gsv_number
                     targ.status = tar_resp.status
-                    targ.filename = 'trans-' + sour.filename
+                    targ.filename = tar_resp.filename
                     transQueue[targ.id] = {fileID: fileID, original: sour, target: targ}
 
                     var ytd = $("<tr/>").attr("id", fileID)

@@ -22,7 +22,7 @@ module VideoHelper
 
 export LD_LIBRARY_PATH=#{ENV['LD_LIBRARY_PATH']}
 
-#{cmd} 2>&1
+    #{cmd} 2>&1
     "
     if !Dir.exist? @default_pbs_dir
       FileUtils.makedirs(@default_pbs_dir)
@@ -44,7 +44,7 @@ fi
 echo -e ${jobId}\";${qstat}\"
     "
 
-    running_file=File.new(File.join(@default_pbs_dir, "_running_file"), 'w')
+    running_file=File.new(File.join(@default_pbs_dir, "_running_file_"+transObj.gsv_number), 'w')
     running_file.write(running_cmd)
     running_file.close
     %x[chmod +x #{running_file.path}]
@@ -91,6 +91,13 @@ echo -e ${jobId}\";${qstat}\"
           v_info[:cost_time] = info_reg[1]
           v_info[:complete_time] = info_reg[2]
         end
+
+
+        run_f=File.join(@default_pbs_dir, "_running_file_"+transObj.gsv_number)
+        if File.exist? run_f
+          File.delete(run_f)
+        end
+
         transObj.update_attributes!(v_info)
         transObj.save!
       else

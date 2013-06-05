@@ -47,11 +47,11 @@ class TranscodeController < ApplicationController
 
         dest_filename="trans-"+v.filename
         while (Transcode.find_all_by_filename(dest_filename).length!=0)
-          dest_filename="trans-"+Digest::MD5.hexdigest(Time.new().to_s)[0, 5]+"-"+v.filename
+          dest_filename="trans-"+Digest::MD5.hexdigest((Time.new()+rand(10000)).to_s)[0, 5]+"-"+v.filename
         end
         trans=Transcode.create(:filename => dest_filename,
                                :duration => v[:duration],
-                               :gsv_number => Digest::MD5.hexdigest(Time.new().to_s),
+                               :gsv_number => Digest::MD5.hexdigest(dest_filename+Time.new().to_s),
                                :status => VideoHelper.trans_status(:PREPARE),
                                :video_source_id => v.id,
                                :user_id => user_id)
@@ -111,6 +111,7 @@ class TranscodeController < ApplicationController
   end
 
   def delete
+    @default_pbs_dir="#{$VTRANS_CONFIG['log_base_dir']}/log/torque"
     info={}
     vIDs=params[:vIDs]
     vIDs.each do |vID|
@@ -118,6 +119,10 @@ class TranscodeController < ApplicationController
         trans=Transcode.find(vID.to_i)
         if (trans==nil || trans.user_id!=current_user.id)
           raise Exception.new(VideoHelper.error_info(:ERROR_007))
+        end
+        pbs_file_path=File.join(@default_pbs_dir, trans.gsv_number+".pbs")
+        if File.exist? pbs_file_path
+          File.delete pbs_file_path
         end
         if trans.status == VideoHelper.trans_status(:COMPLETE)
           v_path=File.join(trans.path, trans.filename+"."+trans.video_format)
@@ -186,7 +191,6 @@ class TranscodeController < ApplicationController
           FileUtils.makedirs(trans[:path])
         end
         job_id, job_stat=VideoHelper.transfer_by_pbs(trans)
-        p job_id, job_stat
         trans.status=VideoHelper.parse_status_from_pbs_stat(job_stat)
         trans.pbs_job_id=job_id
         trans.save!
