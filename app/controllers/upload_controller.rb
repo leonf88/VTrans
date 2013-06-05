@@ -62,6 +62,7 @@ class UploadController < ApplicationController
       end
 
       FileUtils.mv(params[:Filedata].tempfile.path, file_path)
+      File.chmod(0777, file_path)
       v_info=VideoHelper.get_video_info_by_path(file_path)
       v_info[:user_id]=current_user.id.to_s
       Upload.create(v_info)
@@ -119,7 +120,7 @@ class UploadController < ApplicationController
       if (trans==nil || trans.user_id!=current_user.id)
         raise Exception.new(VideoHelper.error_info(:ERROR_007))
       end
-      log_file_path="#{Rails.root}/log/upload/#{trans.filename}.#{trans.video_format}.log"
+      log_file_path="#{$VTRANS_CONFIG['log_base_dir']}/log/upload/#{trans.filename}.#{trans.video_format}.log"
       if (File.exist?(log_file_path))
         content=IO.read(log_file_path)
         info[:flag]=true

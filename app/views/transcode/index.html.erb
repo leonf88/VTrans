@@ -177,14 +177,15 @@
                 $.post('transcode/status', {gsv_list: onTransIDs, authenticity_token: auth_token}, function (result) {
                     for (var vID in result) {
                         var info = result[vID]
-//                        console.log(transQueue[vID])
                         if (info['status'] == 2) {
+//                            console.log(transQueue[vID])
                             transQueue[vID].target.status = "出错"
                             errorQueueNew[vID] = transQueue[vID]
                             errorQueueNew[vID].msg = info['msg']
                             $("#" + transQueue[vID].fileID).find('.status').html("出错").css('color', 'red')
                             $("#" + transQueue[vID].fileID).find('.checkbox-item-hook').attr('checked', false).attr('disabled', true).css('padding', 0).css('width', 'auto')
                             delete transQueue[vID]
+                            onTransLength--
                         } else if (info['status'] == 1) {
                             transQueue[vID].target.status = "等待"
                             $("#" + transQueue[vID].fileID).find('.status').html("等待").css('font-weight', 'green')

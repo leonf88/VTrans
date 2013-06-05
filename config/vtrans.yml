@@ -3,6 +3,7 @@ trans_cmd: "/usr/local/bin/ffmpeg"        # the transcode tools path, e.g. ffmpe
 server_path: "/home/vtrans"               # the transcode video basic directory
 upload_path: "/home/vtrans/data/upload"   # the upload storage directory
 trans_path: "/home/vtrans/data/transcode" # the transcode video storage directory
+log_base_dir: "/home/vtrans/log"          # the log directory
 
 allow_extension: "mp4;3gp;flv;mpg"
 fileDesc: "File(*.mp4;*.3pg;*.mpg*;*.flv)"

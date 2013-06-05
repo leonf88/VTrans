@@ -240,7 +240,7 @@ class TranscodeController < ApplicationController
     info={}
     params[:gsv_list].each_pair do |vID, gsv|
       begin
-        log_file="#{Rails.root}/log/video_info/#{gsv}.log"
+        log_file="#{$VTRANS_CONFIG['log_base_dir']}/log/video_info/#{gsv}.log"
         log_lines=VideoHelper.get_log_info(log_file)
         last_line=log_lines.split("\n")[-1]
         p last_line
@@ -351,7 +351,7 @@ class TranscodeController < ApplicationController
       if ((params[:type]=='0' && trans==nil) || params[:type=='1']&&(trans==nil || trans.user_id!=current_user.id))
         raise Exception.new(VideoHelper.error_info(:ERROR_007))
       end
-      log_file_path="#{Rails.root}/log/upload/#{trans.filename}.#{trans.video_format}.log"
+      log_file_path="#{$VTRANS_CONFIG['log_base_dir']}/log/upload/#{trans.filename}.#{trans.video_format}.log"
       if (File.exist?(log_file_path))
         content=IO.read(log_file_path)
         info[:flag]=true

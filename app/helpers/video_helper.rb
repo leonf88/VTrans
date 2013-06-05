@@ -3,8 +3,8 @@ require "digest/md5"
 
 module VideoHelper
 
-  @transcode_info_dir="#{Rails.root}/log/transcode"
-  @default_pbs_dir="#{Rails.root}/log/torque"
+  @transcode_info_dir="#{$VTRANS_CONFIG['log_base_dir']}/log/transcode"
+  @default_pbs_dir="#{$VTRANS_CONFIG['log_base_dir']}/log/torque"
   # use openPBS, e.g. torque, to transcode the video
   # generate a pbs job configuration file,
   # submit the pbs job to openPBS server
@@ -103,7 +103,7 @@ echo -e ${jobId}\";${qstat}\"
   def self.transfer_by_transObj(transObj)
     cmd=get_cmd(transObj)
 
-    log_file="#{Rails.root}/log/upload/#{transObj.gsv_number}.log"
+    log_file="#{$VTRANS_CONFIG['log_base_dir']}/log/upload/#{transObj.gsv_number}.log"
     stat=system "#{cmd} >#{log_file} 2>&1 &"
 
     if (!stat)
@@ -153,8 +153,7 @@ echo -e ${jobId}\";${qstat}\"
     video_info=`#{$VTRANS_CONFIG['trans_cmd']} -i #{video_path} 2>&1`
 
     filename=File.basename(video_path)
-    p video_info
-    write_log_to_file(video_info, "#{Rails.root}/log/upload/#{filename}.log")
+    write_log_to_file(video_info, "#{$VTRANS_CONFIG['log_base_dir']}/log/upload/#{filename}.log")
     if ($? != 0)
       msg=video_info.split("\n")[-1]
       if (msg !~ %r{At least one output file must be specified})
