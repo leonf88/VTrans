@@ -282,6 +282,8 @@ echo -e ${jobId}\";${qstat}\"
         cmd1+=" -f mpeg "
       elsif (transObj.video_format=="mkv")
         cmd1+=" -f matroska "
+      elsif (transObj.video_format=="cavs")
+        cmd1+=" -f cavsvideo "
       else
         cmd1+=" -f #{transObj.video_format} "
       end
