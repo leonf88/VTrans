@@ -114,7 +114,7 @@
                 $(this).find('[name=filename]').val(params.filename)
                 $(this).find('[name=video_format]').val(params.video_format)
                 $(this).find('[name=vcodec]').val(params.vcodec)
-                $(this).find('[name=frams_size]').val(params.frams_size)
+                $(this).find('[name=frame_size]').val(params.frame_size)
                 $(this).find('[name=aspect]').val(params.aspect)
                 $(this).find('[name=fps]').val(params.fps)
                 $(this).find('[name=bitrate]').val(params.bitrate)
@@ -571,9 +571,9 @@
       <td>
         <select name="video_format">
           <option value="mp4">MP4</option>
-          <option value="flv">FLV</option>
+          <!--<option value="flv">FLV</option>-->
           <option value="3gp">3GP</option>
-          <option value="avi">AVI</option>
+          <!--<option value="avi">AVI</option>-->
         </select>
       </td>
     </tr>
@@ -588,34 +588,34 @@
       <td>
         <select name="vcodec" disabled="disabled">
           <option value="libx264">H.264/AVC(X264)</option>
-          <option value="">H.263</option>
-          <option value="">AVS</option>
+          <option value="h263">H.263</option>
+          <option value="libxavs">AVS</option>
         </select>
       </td>
     </tr>
     <tr>
       <td class="tt">分辨率</td>
       <td>
-        <select name="frams_size">
+        <select name="frame_size">
           <option value="">原始分辨率</option>
-          <option value="160x128">160x128</option>
+          <!--<option value="160x128">160x128</option>-->
           <option value="176x144">176x144</option>
-          <option value="208x176">208x176</option>
-          <option value="220x176">220x176</option>
+          <!--<option value="208x176">208x176</option>-->
+          <!--<option value="220x176">220x176</option>-->
           <option value="320x240">320x240</option>
-          <option value="400x240">400x240</option>
-          <option value="480x272">480x272</option>
-          <option value="480x360">480x360</option>
-          <option value="640x272">640x272</option>
-          <option value="640x360">640x360</option>
+          <!--<option value="400x240">400x240</option>-->
+          <!--<option value="480x272">480x272</option>-->
+          <!--<option value="480x360">480x360</option>-->
+          <!--<option value="640x272">640x272</option>-->
+          <!--<option value="640x360">640x360</option>-->
           <option value="640x480">640x480</option>
-          <option value="720x480">720x480</option>
-          <option value="800x340">800x340</option>
-          <option value="848x480">848x480</option>
-          <option value="1024x576">1024x576</option>
-          <option value="1280x544">1280x544</option>
-          <option value="1280x720">1280x720</option>
-          <option value="1920x816">1920x816</option>
+          <!--<option value="720x480">720x480</option>-->
+          <!--<option value="800x340">800x340</option>-->
+          <!--<option value="848x480">848x480</option>-->
+          <!--<option value="1024x576">1024x576</option>-->
+          <!--<option value="1280x544">1280x544</option>-->
+          <!--<option value="1280x720">1280x720</option>-->
+          <!--<option value="1920x816">1920x816</option>-->
         </select>
       </td>
     </tr>
@@ -626,9 +626,9 @@
           <option value="">自动</option>
           <option value="4:3">4:3</option>
           <option value="16:9">16:9</option>
-          <option value="2.35:1">2.35:1</option>
-          <option value="5:4">5:4</option>
-          <option value="3:2">3:2</option>
+          <!--<option value="2.35:1">2.35:1</option>-->
+          <!--<option value="5:4">5:4</option>-->
+          <!--<option value="3:2">3:2</option>-->
         </select>
       </td>
     </tr>
@@ -643,10 +643,10 @@
           <option value="15">15</option>
           <option value="20">20</option>
           <option value="23.976">23.976</option>
-          <option value="24">24</option>
-          <option value="25">25</option>
-          <option value="29.970">29.970</option>
-          <option value="30">30</option>
+          <!--<option value="24">24</option>-->
+          <!--<option value="25">25</option>-->
+          <!--<option value="29.970">29.970</option>-->
+          <!--<option value="30">30</option>-->
         </select>
       </td>
     </tr>
@@ -659,11 +659,11 @@
           <option value="256">256</option>
           <option value="384">384</option>
           <option value="400">400</option>
-          <option value="500">500</option>
-          <option value="512">512</option>
-          <option value="600">600</option>
-          <option value="700">700</option>
-          <option value="768">768</option>
+          <!--<option value="500">500</option>-->
+          <!--<option value="512">512</option>-->
+          <!--<option value="600">600</option>-->
+          <!--<option value="700">700</option>-->
+          <!--<option value="768">768</option>-->
         </select>
       </td>
 
@@ -687,11 +687,12 @@
       <td>
         <select name="ar">
           <option value="0">自动</option>
+          <option value="22050">8000</option>
           <option value="22050">22050</option>
-          <option value="24000">24000</option>
-          <option value="32000">32000</option>
-          <option value="44100">44100</option>
-          <option value="48000">48000</option>
+          <!--<option value="24000">24000</option>-->
+          <!--<option value="32000">32000</option>-->
+          <!--<option value="44100">44100</option>-->
+          <!--<option value="48000">48000</option>-->
         </select>
       </td>
     </tr>
@@ -702,14 +703,14 @@
           <option value="32">32</option>
           <option value="64">60</option>
           <option value="80">80</option>
-          <option value="100">100</option>
-          <option value="150">150</option>
-          <option value="180">180</option>
-          <option value="200">200</option>
-          <option value="220">220</option>
-          <option value="250">250</option>
-          <option value="300">300</option>
-          <option value="350">350</option>
+          <!--<option value="100">100</option>-->
+          <!--<option value="150">150</option>-->
+          <!--<option value="180">180</option>-->
+          <!--<option value="200">200</option>-->
+          <!--<option value="220">220</option>-->
+          <!--<option value="250">250</option>-->
+          <!--<option value="300">300</option>-->
+          <!--<option value="350">350</option>-->
         </select>
       </td>
     </tr>

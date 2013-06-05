@@ -180,6 +180,7 @@ class TranscodeController < ApplicationController
   end
 
   def submit
+    Rails.logger.debug "submit at #{Time.now.to_f}"
     info={}
     params[:data].each_pair do |key, vID|
       begin

@@ -49,6 +49,7 @@ echo -e ${jobId}\";${qstat}\"
     running_file.close
     %x[chmod +x #{running_file.path}]
     #qsub #{pbs_job_file}
+    Rails.logger.debug "transcode running at #{Time.now.to_f}"
     pbs_job_info=%x[bash -c #{running_file.path}]
     arr=pbs_job_info.split(';')
     pbs_job_id=arr[0]
