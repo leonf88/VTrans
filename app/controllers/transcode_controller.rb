@@ -119,10 +119,13 @@ class TranscodeController < ApplicationController
         if (trans==nil || trans.user_id!=current_user.id)
           raise Exception.new(VideoHelper.error_info(:ERROR_007))
         end
-        v_path=File.join(trans.path, trans.filename+"."+trans.video_format)
-        if File.exist? v_path
-          File.delete v_path
+        if trans.status == VideoHelper.trans_status(:COMPLETE)
+          v_path=File.join(trans.path, trans.filename+"."+trans.video_format)
+          if File.exist? v_path
+            File.delete v_path
+          end
         end
+
         trans.destroy
         info[vID]={:flag => true}
       rescue => err
