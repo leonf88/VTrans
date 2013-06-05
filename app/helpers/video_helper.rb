@@ -170,11 +170,20 @@ echo -e ${jobId}\";${qstat}\"
     end
 
     info_reg=%r{Duration: (.*?)\.\d*?, start: (.*?), bitrate: (\d*) kb\/s.*?Video: (\w+).*?, (.*?), (\w+).*?Audio: (\w+).*?, (\d+) Hz, (\w+).*}m.match(video_info)
-    {:duration => info_reg[1],
-     :vcodec => info_reg[4],
-     :frame_size => info_reg[6],
-     :acodec => info_reg[7],
-     :data_size => File.new(video_path).size}
+    if info_reg is nil
+      info_reg=%r{Duration: N/A, bitrate: N/A.*?Video: (\w+).*?, (.*?), (\w+).*}m.match(video_info)
+      {:duration => -1,
+       :vcodec => info_reg[1],
+       :frame_size => info_reg[3],
+       :acodec => nil,
+       :data_size => File.new(video_path).size}
+    else
+      {:duration => info_reg[1],
+       :vcodec => info_reg[4],
+       :frame_size => info_reg[6],
+       :acodec => info_reg[7],
+       :data_size => File.new(video_path).size}
+    end
   end
 
   # check the video format is legal

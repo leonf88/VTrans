@@ -14,7 +14,6 @@ class Transcode < ActiveRecord::Base
   validates_length_of :duration, :maximum => 10
   validates_length_of :vcodec, :maximum => 15
   validates_length_of :acodec, :maximum => 15
-  validates_length_of :acodec, :maximum => 10
   validates_length_of :pbs_job_id, :maximum => 50
 
   validates_presence_of :filename, :gsv_number, :status, :message => "不能为空"
