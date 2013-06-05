@@ -170,7 +170,7 @@ echo -e ${jobId}\";${qstat}\"
     end
 
     info_reg=%r{Duration: (.*?)\.\d*?, start: (.*?), bitrate: (\d*) kb\/s.*?Video: (\w+).*?, (.*?), (\w+).*?Audio: (\w+).*?, (\d+) Hz, (\w+).*}m.match(video_info)
-    if info_reg is nil
+    if info_reg == nil
       info_reg=%r{Duration: N/A, bitrate: N/A.*?Video: (\w+).*?, (.*?), (\w+).*}m.match(video_info)
       {:duration => -1,
        :vcodec => info_reg[1],
