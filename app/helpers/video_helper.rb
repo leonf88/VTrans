@@ -83,7 +83,7 @@ echo -e ${jobId}\";${qstat}\"
       log_file="#{@transcode_info_dir}/#{gsv}.o#{seq}"
       log_lines=VideoHelper.get_log_info(log_file)
 
-      if (log_lines=~%r{video:.*? audio:.*? subtitle:.*? global headers:.*? muxing overhead .*?})
+      if (log_lines=~%r{video:.*? audio:.*? subtitle:.*? global headers:.*? muxing overhead: .*?})
         job_stat= trans_status(:COMPLETE)
         dest_path=File.join(transObj.path, transObj.filename+"."+transObj.video_format)
         v_info=VideoHelper.record_video_info(dest_path)

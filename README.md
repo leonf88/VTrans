@@ -154,10 +154,47 @@ STEP BY STEP
         $ rake db:migrate
 
     When create database, check the sock is correct. In `/etc/my.cnf`, 
-    the sock path should be the same with that in `config/database.yml`
+    the sock path should be the same with that in `config/database.yml`.
+
+    Prepare the paths which are defined in `config/vtrans.yml`
+
+        $ mkdir -p /home/vtrans/data/upload
+        $ mkdir -p /home/vtrans/data/transcode
 
 5. start service 
 
-        $ rails server thin
+        $ rails server thin -b 10.61.0.202 
 
 6. install torque
+
+        $ wget http://wpfilebase.s3.amazonaws.com/torque/torque-3.0.6.tar.gz
+        $ tar zxf torque-3.0.6.tar.gz
+        $ cd torque-3.0.6
+        $ ./configure
+        $ make -j4 
+        $ sudo make install
+
+7. prepare torque, make sure torque is installed in `/usr/local` directory
+
+        $ vi /var/spool/torque/mom_priv/config
+
+        $pbsserver  localhost   # note: hostname running pbs_server
+        $logevent   255         # bitmap of which events to log
+
+        $ vi /var/spool/torque/server_priv/nodes
+
+        localhost np=2 cluster01
+        
+        $ vi /var/spool/torque/server_name
+
+        localhost
+
+        # start pbs
+        $ sudo script/torque.setup vtrans localhost
+
+        # check status
+        $ pbsnodes -a
+
+8. install ffmpeg
+
+        [ffmpeg install on CentOS] [4]

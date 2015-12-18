@@ -2,7 +2,7 @@
 # torque.setup
 
 # USAGE:  torque.setup <USERNAME> [<HOSTNAME>]
-export TORQUE_HOME=/opt/torque
+export TORQUE_HOME=/usr/local
 export PATH=$TORQUE_HOME/sbin:$TORQUE_HOME/bin:$PATH
 
 
@@ -31,7 +31,7 @@ if [ "$?" -eq "0" ] ; then
   exit 1;
 fi
 
-pbs_server -t create
+/usr/local/sbin/pbs_server -t create
 
 # We need to pause a second to allow the server to finish coming
 # up.
@@ -44,29 +44,29 @@ if [ "$?" -ne "0" ] ; then
   exit 1;
 fi
 
-echo set server operators += $USER | qmgr
+echo set server operators += $USER | /usr/local/bin/qmgr
 
 if [ "$?" -ne "0" ] ; then
   echo "ERROR: cannot set TORQUE admins"
-  qterm
+  /usr/local/bin/qterm
   exit 1;
 fi
 
-echo set server managers += $USER | qmgr
+echo set server managers += $USER | /usr/local/bin/qmgr
 
 
-qmgr -c 'set server scheduling = true'
-qmgr -c 'set server keep_completed = 300'
-qmgr -c 'set server mom_job_sync = true'
+/usr/local/bin/qmgr -c 'set server scheduling = true'
+/usr/local/bin/qmgr -c 'set server keep_completed = 300'
+/usr/local/bin/qmgr -c 'set server mom_job_sync = true'
 
 # create default queue
 
-qmgr -c 'create queue batch'
-qmgr -c 'set queue batch queue_type = execution'
-qmgr -c 'set queue batch started = true'
-qmgr -c 'set queue batch enabled = true'
-qmgr -c 'set queue batch resources_default.walltime = 1:00:00'
-qmgr -c 'set queue batch resources_default.nodes = 1'
+/usr/local/bin/qmgr -c 'create queue batch'
+/usr/local/bin/qmgr -c 'set queue batch queue_type = execution'
+/usr/local/bin/qmgr -c 'set queue batch started = true'
+/usr/local/bin/qmgr -c 'set queue batch enabled = true'
+/usr/local/bin/qmgr -c 'set queue batch resources_default.walltime = 1:00:00'
+/usr/local/bin/qmgr -c 'set queue batch resources_default.nodes = 1'
 
-qmgr -c 'set server default_queue = batch'
+/usr/local/bin/qmgr -c 'set server default_queue = batch'
 
