@@ -16,7 +16,8 @@ development:
   pool: 5
   username: vtrans
   password: "123456"
-  socket: /var/run/mysqld/mysqld.sock
+  socket: /var/lib/mysql/mysql.sock    # centos
+#  socket: /var/run/mysqld/mysqld.sock # ubuntu
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -37,6 +38,7 @@ production:
   reconnect: false
   database: vtrans
   pool: 5
-  username: trans
+  username: vtrans
   password: "123456"
-  socket: /var/run/mysqld/mysqld.sock
+  socket: /var/lib/mysql/mysql.sock
+#  socket: /var/run/mysqld/mysqld.sock

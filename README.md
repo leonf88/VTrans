@@ -5,18 +5,18 @@ A web framework for converting a video in remote servers. Web server is based on
 
 Licensed under the GNU Lesser General Public License Copyright (c) 2012-2013
 
-Version 0.1.0 build 20130603
+Version 0.2.0 build 20151218
 
 REQUIRE
 --
 
 According to my development environment, VTrans project require these software below:
 
-> Ubuntu 12.0.4 or CentOS 5  
+> CentOS 6  
 > ruby 1.9.3p429  
 > rails 3.2.13  
-> ffmpeg 1.2.1  
-> torque 3.0.6  
+> ffmpeg 2.8.4  
+> torque 4.2.10 
 > mysql  
 
 INSTALL
@@ -106,4 +106,58 @@ Build datatbase:
               
 To run thin server, execute `rails server thin`
 
-### Production mode
+STEP BY STEP
+--
+
+1. create user with `root`
+    
+        $ useradd vtrans
+        $ passwd vtrans (passwd is vtrans)
+        $ visudo (add one line `vtrans  ALL=(ALL)       ALL`)
+
+2. install mysql on dashboard node (such as node1)
+
+        $ mysql -uroot -p
+        
+        > CREATE USER 'vtrans'@'localhost' IDENTIFIED BY '123456';
+        > GRANT ALL PRIVILEGES ON * . * TO 'vtrans'@'localhost';
+        > flush privileges;
+
+3. install rvm and ruby 
+
+    install rvm
+
+        $ gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+        $ \curl -sSL https://get.rvm.io | bash -s stable
+        $ source ~/.profile (as the WARNING states)
+
+    Check the `cat ~/.profile` file
+
+        export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+        [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+    after that, install ruby 1.9.3 
+
+        $ rvm install 1.9.3
+        $ rvm use 1.9.3
+        $ gem source -r https://rubygems.org/
+        $ gem source -a https://ruby.taobao.org
+
+4. install VTrans
+
+        $ git clone https://github.com/liangfan/VTrans
+        $ cd VTrans
+        $ gem install bundle
+        $ bundle install
+        $ rake db:create 
+        $ rake db:migrate
+
+    When create database, check the sock is correct. In `/etc/my.cnf`, 
+    the sock path should be the same with that in `config/database.yml`
+
+5. start service 
+
+        $ rails server thin
+
+6. install torque
