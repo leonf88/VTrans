@@ -197,4 +197,6 @@ STEP BY STEP
 
 8. install ffmpeg
 
-        [ffmpeg install on CentOS] [4]
+[ffmpeg install on CentOS] [4]
+
+9. Check the paths are correct. Look at `config/vtrans.yml` file.
