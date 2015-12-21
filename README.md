@@ -176,21 +176,30 @@ STEP BY STEP
 
 7. prepare torque, make sure torque is installed in `/usr/local` directory
 
+        # prepare pbs
+        $ sudo script/torque.setup vtrans <hostname>
+
         $ vi /var/spool/torque/mom_priv/config
 
-        $pbsserver  localhost   # note: hostname running pbs_server
-        $logevent   255         # bitmap of which events to log
+        $pbsserver  <hostname>   # note: hostname running pbs_server
+        $logevent   255          # bitmap of which events to log
 
         $ vi /var/spool/torque/server_priv/nodes
 
-        localhost np=2 cluster01
+        <slavename1> np=2 cluster01
+        <slavename2> np=2 cluster01
         
         $ vi /var/spool/torque/server_name
 
-        localhost
+        <hostname>
 
-        # start pbs
-        $ sudo script/torque.setup vtrans localhost
+        # restart pbs_server
+        $ kill -9 <pbs_server pid>
+        $ /usr/local/sbin/pbs_server
+        $ /usr/local/sbin/pbs_sched
+
+        # on the slave node
+        $ /usr/local/sbin/pbs_mom
 
         # check status
         $ pbsnodes -a
